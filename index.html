@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="./src/css/main.css">
+    <link rel="stylesheet" href="./src/css/matrix_size_input.css">
+    <script src="./src/js/matrix_size_input.js" defer></script>
+</head>
+<body>
+    <canvas id="graphs-canvas"></canvas>
+    <div class="menu">
+        <h3>Tamanho da Matriz</h3>
+        <matrix-size-input id="matrix-size"></matrix-size-input>
+        <vertical-spacing></vertical-spacing>
+        <button onclick="generateChart()">Gerar Grafo</button>
+
+        <h3>Algoritmo</h3>
+    </div>
+</body>
+</html>
+
+<script src="./src/js/wave_collapse_function.js"></script>
+<script src="./src/js/graph.js"></script>
+<script src="./src/js/canvas.js"></script>
+<script src="./src/js/bus_tracker.js"></script>
+
+<script>
+
+function generateChart() {
+    let matrixSize = document.getElementById("matrix-size").value;
+    generateNewScene(matrixSize);
+}
+
+</script>

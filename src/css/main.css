@@ -1,0 +1,66 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+body {
+    overflow: hidden;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(231, 231, 231);
+    cursor: grab;
+}
+
+.menu {
+    position: fixed;
+    top: 40px;
+    right: 40px;
+    width: 300px;
+    height: calc(100vh - 80px);
+    background-color: white;
+    border-radius: 30px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    padding: 42px;
+    overflow-y: auto;
+}
+
+.menu h3 {
+    padding: 0;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 13px;
+}
+
+.menu button {
+    width: 100%;
+    height: 52px;
+    background: #008CC1;
+    box-shadow: 0px 4px 5px 1px #D6E8F5, none inset;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    color: #e4eef5;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.menu button:hover {
+    box-shadow: 0px 4px 5px 1px #D6E8F5, 0px 3px 6px 5px #20222423 inset;
+}
+
+vertical-spacing {
+    height: 20px;
+    width: 100%;
+    display: flex;
+}
