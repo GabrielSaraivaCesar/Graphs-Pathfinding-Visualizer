@@ -33,6 +33,7 @@ canvas {
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 13px;
+    color: #2D2D2D;
 }
 
 .menu button {
@@ -53,6 +54,45 @@ canvas {
     border: none;
     cursor: pointer;
     transition: 0.3s;
+}
+
+.menu .input {
+    width: 100%;
+    height: 50px;
+
+    background: #EFEFEF;
+    border: 1px solid #D2D2D2;
+    border-radius: 5px;
+    position: relative;
+    transition: 0.15s;
+}
+.menu .input label {
+    top: 8px;
+    left: 8px;
+    position: absolute;
+    
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 12px;
+
+    color: #7D7D7D;
+}
+.menu .input input {
+    background-color: transparent;
+    border: none;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    padding: 8px;
+    padding-top: 20px;
+}
+.menu .input:focus-within {
+    border-color: #008CC1;
+    border-width: 1.5px;
+}
+.menu .input:focus-within label {
+    color: #008CC1;
 }
 
 .menu button:hover {

@@ -1,6 +1,6 @@
 
 function generateNewScene(matrixSize=4) {
-    
+
     scene.clearScene();
 
     let WCFMatrix = generateWCFMatrix(matrixSize);
@@ -195,4 +195,5 @@ function generateNewScene(matrixSize=4) {
     }
 }
 
+generateNewScene();
 
