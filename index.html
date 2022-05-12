@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="./src/css/main.css">
     <link rel="stylesheet" href="./src/css/matrix_size_input.css">
-    <script src="./src/js/matrix_size_input.js" defer></script>
+    <script src="./src/js/components/matrix_size_input.js" ></script>
 </head>
 <body>
     <canvas id="graphs-canvas"></canvas>
@@ -30,15 +30,31 @@
             <input id="final-vertex" type="text">
         </div>
         <vertical-spacing></vertical-spacing>
+        <div class="input-multi-options">
+            <div class="opt">
+                <input id="carteiro-chines" type="radio" name="algorithm-choice" value="carteiro-chines" checked>
+                <label for="carteiro-chines">Cart. Chin.</label>
+            </div>
+            <div class="opt">
+                <input id="caixeiro-viajante" type="radio" name="algorithm-choice" value="caixeiro-viajante">
+                <label for="caixeiro-viajante">Caix. Viag.</label>
+            </div>
+            <div class="opt">
+                <input id="caminho-curto" type="radio" name="algorithm-choice" value="caminho-curto">
+                <label for="caminho-curto">Mais Curto</label>
+            </div>
+        </div>
+        <vertical-spacing></vertical-spacing>
         <button onclick="">Executar</button>
     </div>
 </body>
 </html>
 
+<script src="./src/js/shared/constants.js"></script>
 <script src="./src/js/wave_collapse_function.js"></script>
-<script src="./src/js/graph.js"></script>
-<script src="./src/js/canvas.js"></script>
-<script src="./src/js/bus_tracker.js"></script>
+<script src="./src/js/libs/graph/graph.js"></script>
+<script src="./src/js/libs/navigable-canvas/canvas.js"></script>
+<script src="./src/js/main.js"></script>
 
 <script>
 

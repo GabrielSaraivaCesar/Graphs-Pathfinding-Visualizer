@@ -39,11 +39,11 @@ class WCFMatrixObject {
     getAllowedOnTop(items) {
         if (this.top === 0) {
             return items.filter(item => {
-                return item.bot === 0;
+                return !item || item.bot === 0;
             })
         };
         return items.filter(item => {
-            return item.bot === 1;
+            return !item || item.bot === 1;
         })
     }
     
@@ -51,11 +51,11 @@ class WCFMatrixObject {
     getAllowedOnTopRight(items) {
         if (this.topRight === 0) {
             return items.filter(item => {
-                return item.botLeft === 0;
+                return !item || item.botLeft === 0;
             })
         };
         return items.filter(item => {
-            return item.botLeft === 1;
+            return !item || item.botLeft === 1;
         })
     }
 
@@ -63,11 +63,11 @@ class WCFMatrixObject {
     getAllowedOnRight(items) {
         if (this.right === 0) {
             return items.filter(item => {
-                return item.left === 0;
+                return !item || item.left === 0;
             })
         };
         return items.filter(item => {
-            return item.left === 1;
+            return !item || item.left === 1;
         })
     }
 
@@ -75,11 +75,11 @@ class WCFMatrixObject {
     getAllowedOnBotRight(items) {
         if (this.botRight === 0) {
             return items.filter(item => {
-                return item.topLeft === 0;
+                return !item || item.topLeft === 0;
             })
         };
         return items.filter(item => {
-            return item.topLeft === 1;
+            return !item || item.topLeft === 1;
         })
     }
 
@@ -88,11 +88,11 @@ class WCFMatrixObject {
     getAllowedOnBot(items) {
         if (this.bot === 0) {
             return items.filter(item => {
-                return item.top === 0;
+                return !item || item.top === 0;
             })
         };
         return items.filter(item => {
-            return item.top === 1;
+            return !item || item.top === 1;
         })
     }
 
@@ -101,11 +101,11 @@ class WCFMatrixObject {
     getAllowedOnBotLeft(items) {
         if (this.botLeft === 0) {
             return items.filter(item => {
-                return item.topRight === 0;
+                return !item || item.topRight === 0;
             })
         };
         return items.filter(item => {
-            return item.topRight === 1;
+            return !item || item.topRight === 1;
         })
     }
 
@@ -114,11 +114,11 @@ class WCFMatrixObject {
     getAllowedOnLeft(items) {
         if (this.left === 0) {
             return items.filter(item => {
-                return item.right === 0;
+                return !item || item.right === 0;
             })
         };
         return items.filter(item => {
-            return item.right === 1;
+            return !item || item.right === 1;
         })
     }
 
@@ -127,11 +127,11 @@ class WCFMatrixObject {
     getAllowedOnTopLeft(items) {
         if (this.topLeft === 0) {
             return items.filter(item => {
-                return item.botRight === 0;
+                return !item || item.botRight === 0;
             })
         };
         return items.filter(item => {
-            return item.botRight === 1;
+            return !item || item.botRight === 1;
         })
     }
 }
@@ -149,12 +149,12 @@ const possibleObjects = [
 
     new WCFMatrixObject("00100010", "left-right"),
 
-    new WCFMatrixObject("10100010", "left-right-top"),
-    new WCFMatrixObject("00101010", "left-right-bot"),
+    new WCFMatrixObject("10100010", "left-right-top", true),
+    new WCFMatrixObject("00101010", "left-right-bot", true),
 
     
-    new WCFMatrixObject("10001010", "top-bot-left"),
-    new WCFMatrixObject("10101000", "top-bot-left"),
+    new WCFMatrixObject("10001010", "top-bot-left", true),
+    new WCFMatrixObject("10101000", "top-bot-left", true),
 
     // new WCFMatrixObject("01000100", "topRight-botLeft"),
     // new WCFMatrixObject("01100100", "topRight-botLeft-right", true),
@@ -214,16 +214,22 @@ function generateWCFMatrix(matrixSize=4) {
             
             if (allowedItems.length > 0) {
                 let item = getRandomFromList(allowedItems)
-                matrix[rowIndex][colIndex] = new WCFMatrixObject(item.name, item.imageSrc, item.label, item.isVertex);
-                if (rowIndex === 0 || rowIndex === matrix.length-1) {
-                    matrix[rowIndex][colIndex].left = 1;
-                    matrix[rowIndex][colIndex].right = 1;
-                    matrix[rowIndex][colIndex].rename();
+                if (item) {
+                    matrix[rowIndex][colIndex] = new WCFMatrixObject(item.name, item.imageSrc, item.label, item.isVertex);
+                } else {
+                    matrix[rowIndex][colIndex] = null;    
                 }
-                if (colIndex === 0 || colIndex === matrix.length-1) {
-                    matrix[rowIndex][colIndex].top = 1;
-                    matrix[rowIndex][colIndex].bot = 1;
-                    matrix[rowIndex][colIndex].rename();
+                if (matrix[rowIndex][colIndex]) {
+                    if (rowIndex === 0 || rowIndex === matrix.length-1) {
+                        matrix[rowIndex][colIndex].left = 1;
+                        matrix[rowIndex][colIndex].right = 1;
+                        matrix[rowIndex][colIndex].rename();
+                    }
+                    if (colIndex === 0 || colIndex === matrix.length-1) {
+                        matrix[rowIndex][colIndex].top = 1;
+                        matrix[rowIndex][colIndex].bot = 1;
+                        matrix[rowIndex][colIndex].rename();
+                    }
                 }
             }
         })
