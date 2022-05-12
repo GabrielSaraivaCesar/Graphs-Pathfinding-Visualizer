@@ -90,7 +90,6 @@ class Scene {
     /** @param {MouseEvent} event */
     setIsTranslating(event) {
         if (event.button == 0 || event.button == 2) {
-            event.preventDefault();
             this.isTranslating = true;
             this.canvas.style.cursor = "grabbing";
         }
@@ -99,7 +98,6 @@ class Scene {
     /** @param {MouseEvent} event */
     setIsTranslatingFalse(event, force=false) {
         if (event.button == 0 || event.button == 2 || force) {
-            event.preventDefault();
             this.isTranslating = false;
             this.canvas.style.cursor = "grab";
         }

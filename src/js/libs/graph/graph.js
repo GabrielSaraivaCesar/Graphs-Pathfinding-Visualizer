@@ -8,6 +8,9 @@ class GraphEdge {
     /** @type {number} */
     value = 1;
 
+    /** @type {('AB'|'BA')} */
+    direction = null;
+
     constructor(vertexA, vertexB, value = 1) {
         this.vertexA = vertexA;
         this.vertexB = vertexB;
@@ -29,6 +32,18 @@ class GraphVertex {
 
     get degree() {
         return this.edges.length;
+    }
+
+    get neighbors() {
+        let result = [];
+        this.edges.forEach(edge => {
+            if (edge.vertexA == this) {
+                result.push(edge.vertexB);
+            } else {
+                result.push(edge.vertexA);
+            }
+        });
+        return result;
     }
 
     constructor(tag) {

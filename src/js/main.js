@@ -164,6 +164,11 @@ function drawVertex(vertex) {
     scene.context.fill();
     scene.context.stroke();
     scene.context.closePath();
+
+    // Text
+    scene.context.fillStyle = "#008cc1";
+    scene.context.font = '24px sans-serif';
+    scene.context.fillText(vertex.tag, vertex.posX-20, vertex.posY+10)
 }
 
 function drawEdge(edge, paralels=false) {
