@@ -6,7 +6,7 @@
  */
 function generateDijkstraTable(graph, startVertex) {
     let visitedVertices = [];
-    let distancesTable = {}
+    let distancesTable = {};
 
     // Initializing distances table
     graph.vertices.forEach(vertex => {

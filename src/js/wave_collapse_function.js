@@ -61,6 +61,12 @@ class WCFMatrixObject {
 
     /** @param {WCFMatrixObject[]} items */
     getAllowedOnRight(items) {
+        if (this.botRight === 1) {
+            // avoid crossing roads
+            items = items.filter(item => {
+                return item.botLeft === 0;
+            })
+        }
         if (this.right === 0) {
             return items.filter(item => {
                 return !item || item.left === 0;
@@ -154,17 +160,17 @@ const possibleObjects = [
 
     
     new WCFMatrixObject("10001010", "top-bot-left", true),
-    new WCFMatrixObject("10101000", "top-bot-left", true),
+    new WCFMatrixObject("10101000", "top-bot-right", true),
 
-    // new WCFMatrixObject("01000100", "topRight-botLeft"),
-    // new WCFMatrixObject("01100100", "topRight-botLeft-right", true),
-    // new WCFMatrixObject("01000110", "topRight-botLeft-left", true),
-    // new WCFMatrixObject("01100110", "topRight-botLeft-right-left", true),
+    new WCFMatrixObject("01000100", "topRight-botLeft"),
+    new WCFMatrixObject("01100100", "topRight-botLeft-right", true),
+    new WCFMatrixObject("01000110", "topRight-botLeft-left", true),
+    new WCFMatrixObject("01100110", "topRight-botLeft-right-left", true),
 
-    // new WCFMatrixObject("00010001", "botRight-topLeft"),
-    // new WCFMatrixObject("00110001", "botRight-topLeft-right", true),
-    // new WCFMatrixObject("00010011", "botRight-topLeft-left", true),
-    // new WCFMatrixObject("00110011", "botRight-topLeft-right-left", true),
+    new WCFMatrixObject("00010001", "botRight-topLeft"),
+    new WCFMatrixObject("00110001", "botRight-topLeft-right", true),
+    new WCFMatrixObject("00010011", "botRight-topLeft-left", true),
+    new WCFMatrixObject("00110011", "botRight-topLeft-right-left", true),
 ]
 
 function getRandomFromList(list) {

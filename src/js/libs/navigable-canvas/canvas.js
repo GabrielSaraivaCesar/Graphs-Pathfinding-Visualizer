@@ -1,11 +1,19 @@
 
 
+class SceneObject {
+    tag = "";
+    initializer = null;
 
+    constructor(tag, initializer) {
+        this.tag = tag;
+        this.initializer = initializer;
+    }
+}
 
 class Scene {
-    /** @type HTMLCanvasElement */
+    /** @type {HTMLCanvasElement} */
     canvas = null
-    /** @type CanvasRenderingContext2D */
+    /** @type {CanvasRenderingContext2D} */
     context = null;
 
     scale = 1;
@@ -15,8 +23,8 @@ class Scene {
     translateY = 0;
 
 
-    /** @type Function[]  */
-    _objectsInitializers = []
+    /** @type {SceneObject[]}  */
+    sceneObjects = []
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -35,12 +43,12 @@ class Scene {
     }
 
     /** @param {Function} initializer */
-    addObject(initializer) {
-        this._objectsInitializers.push(initializer);
+    addObject(tag, initializer) {
+        this.sceneObjects.push(new SceneObject(tag, initializer));
     }
 
     clearScene() {
-        this._objectsInitializers = [];
+        this.sceneObjects = [];
     }
 
     draw() {
@@ -53,8 +61,9 @@ class Scene {
         );
         this.context.setTransform(this.scale, 0, 0, this.scale, this.translateX, this.translateY);
        
-        this._objectsInitializers.forEach((initializer) => {
-            initializer();
+        this.sceneObjects.forEach((obj) => {
+            
+            obj.initializer();
         })
     }
 

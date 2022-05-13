@@ -9,7 +9,7 @@ function generateNewScene(matrixSize=4) {
     WCFMatrix.forEach((row, rowIndex) => {
         row.forEach((col, colIndex) => {
             if (col && col.isVertex) {
-                let vertex = new GraphVertex("v"+rowIndex+""+colIndex);
+                let vertex = new GraphVertex("v"+rowIndex+"-"+colIndex);
                 vertex.posX = colIndex * vertexSpacing;
                 vertex.posY = rowIndex * vertexSpacing;
                 col.vertex = vertex
@@ -31,13 +31,13 @@ function generateNewScene(matrixSize=4) {
         let paralelsList = graph.edges.filter((e) => {
             return (e.vertexA == edge.vertexA && e.vertexB == edge.vertexB) || (e.vertexB == edge.vertexA && e.vertexA == edge.vertexB);
         })
-        scene.addObject(() => {
+        scene.addObject("edge-"+edge.vertexA.tag+"-"+edge.vertexB.tag, () => {
             drawEdge(edge, paralelsList.length > 1);
         })
     });
 
     graph.vertices.forEach(vertex => {
-        scene.addObject(() => {
+        scene.addObject("vertex-"+vertex.tag, () => {
             drawVertex(vertex);
         })
     });

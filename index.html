@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="./src/css/main.css">
     <link rel="stylesheet" href="./src/css/matrix_size_input.css">
     <script src="./src/js/components/matrix_size_input.js" ></script>
+    <script src="./src/js/components/searchable_select_input.js" ></script>
 </head>
 <body>
     <canvas id="graphs-canvas"></canvas>
@@ -20,27 +21,26 @@
         <vertical-spacing></vertical-spacing>
         <vertical-spacing></vertical-spacing>
         <h3>Algoritmo</h3>
-        <div class="input">
-            <label for="initial-vertex">Vértice Inicial</label>
-            <input id="initial-vertex" type="text">
+
+        <div style="z-index: 6; position: relative;">
+            <searchable-select-input id="initial-vertex" label="Vértice Inicial" options='[{"label": "v0-0", "value": "v0-0"}]'></searchable-select-input>
         </div>
         <vertical-spacing></vertical-spacing>
-        <div class="input">
-            <label for="final-vertex">Vértice Final</label>
-            <input id="final-vertex" type="text">
+        <div style="z-index: 5; position: relative;">
+            <searchable-select-input id="final-vertex" label="Vértice Final" options='[{"label": "v0-0", "value": "v0-0"}]'></searchable-select-input>
         </div>
         <vertical-spacing></vertical-spacing>
         <div class="input-multi-options">
             <div class="opt">
-                <input id="carteiro-chines" type="radio" name="algorithm-choice" value="carteiro-chines" checked>
+                <input id="carteiro-chines" type="radio" name="algorithm-choice" value="chinese-mailer" checked>
                 <label for="carteiro-chines">Cart. Chin.</label>
             </div>
             <div class="opt">
-                <input id="caixeiro-viajante" type="radio" name="algorithm-choice" value="caixeiro-viajante">
+                <input id="caixeiro-viajante" type="radio" name="algorithm-choice" value="traveler-selesman">
                 <label for="caixeiro-viajante">Caix. Viag.</label>
             </div>
             <div class="opt">
-                <input id="caminho-curto" type="radio" name="algorithm-choice" value="caminho-curto">
+                <input id="caminho-curto" type="radio" name="algorithm-choice" value="closest-path">
                 <label for="caminho-curto">Mais Curto</label>
             </div>
         </div>
@@ -55,21 +55,38 @@
 <script src="./src/js/libs/graph/graph.js"></script>
 <script src="./src/js/libs/navigable-canvas/canvas.js"></script>
 <script src="./src/js/main.js"></script>
-<script type="module" src="./src/js/libs/graph/algorithms/dijkstra.js"></script>
-<script type="module" src="./src/js/libs/graph/algorithms/closest_path.js"></script>
 
 <script type="module">
 import {generateDijkstraTable} from './src/js/libs/graph/algorithms/dijkstra.js';
 import {findClosestPath} from './src/js/libs/graph/algorithms/closest_path.js';
+import {findChineseMailerPath} from './src/js/libs/graph/algorithms/chinese_mailer.js';
+import {NotReachablePathException} from './src/js/libs/graph/algorithms/shared.js';
+
+function updateVertexInputOptions() {
+    let options = JSON.stringify(currentGraph.vertices.map(vertex => ({label: vertex.tag, value: vertex.tag})));
+    document.getElementById("initial-vertex").setAttribute("options", options);
+    document.getElementById("final-vertex").setAttribute("options", options);
+}
+updateVertexInputOptions();
 
 window.generateChart = function () {
     let matrixSize = document.getElementById("matrix-size").value;
     currentGraph = generateNewScene(matrixSize);
+    updateVertexInputOptions();
 }
 
 window.executeAlgorithm = function () {
+    scene.sceneObjects = scene.sceneObjects.filter(obj => {
+        if (obj.tag.split("-")[0] === "path") {
+            return false;
+        }
+        return true;
+    })
+    scene.draw();
+
     let startVertexTag = document.getElementById('initial-vertex').value;
     let endVertexTag = document.getElementById('final-vertex').value;
+    let algorithmChoice = document.querySelector("[name='algorithm-choice']:checked").value;
 
     let startVertex = currentGraph.vertices.find(vertex => {
         return vertex.tag === startVertexTag;
@@ -84,8 +101,52 @@ window.executeAlgorithm = function () {
         console.error("Start vertex is not valid");
         return;
     }
-    let closestPath = findClosestPath(currentGraph, startVertex, endVertex);
-    console.log(closestPath);
+
+
+    
+    try {
+        let path = null;
+        if (algorithmChoice === "closest-path") {
+            path = findClosestPath(currentGraph, startVertex, endVertex);
+        } else if (algorithmChoice === "chinese-mailer") {
+            path = findChineseMailerPath(currentGraph, startVertex, endVertex);
+        }
+    
+        drawPath("path-"+startVertex.tag+"-"+endVertex.tag, path.path)
+        scene.draw();
+    } catch (err) {
+        if (err instanceof NotReachablePathException) {
+        }
+    }
+    
 }
+
+function drawPath(name, path) {
+    if (path.length === 0) return;
+    scene.addObject(name, () => {
+        let startVertexFromPath = currentGraph.vertices.find(v => v.tag == path[0])
+        let lastPos = {
+            x: startVertexFromPath.posX,
+            y: startVertexFromPath.posY,
+        }
+        path.forEach(vertexTag => {
+            scene.context.beginPath();
+            let currentVertex = currentGraph.vertices.find(v => v.tag == vertexTag);
+
+            scene.context.moveTo(lastPos.x, lastPos.y);
+            scene.context.lineTo(currentVertex.posX, currentVertex.posY);
+            lastPos.x = currentVertex.posX;
+            lastPos.y = currentVertex.posY;
+            scene.context.lineWidth = 5
+            scene.context.strokeStyle = "#168c69"
+            scene.context.stroke();
+            scene.context.closePath();
+            scene.context.lineWidth = 1
+        })
+    });
+    scene.draw();
+}
+
+
 
 </script>

@@ -1,3 +1,4 @@
+
 class GraphEdge {
     /** @type {GraphVertex} */
     vertexA = null;
@@ -65,4 +66,5 @@ class Graph {
             return (edge.vertexA == vertexA && edge.vertexB == vertexB) || (edge.vertexB == vertexA && edge.vertexA == vertexB)
         });
     }
+
 }

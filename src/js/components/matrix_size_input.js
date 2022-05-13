@@ -1,4 +1,6 @@
-
+const maxMatrixSize = 15;
+const inputSize = 216;
+const squareSize = inputSize / maxMatrixSize;
 
 class MatrixSizeInput extends HTMLElement {
     value = 0;
@@ -15,7 +17,7 @@ class MatrixSizeInput extends HTMLElement {
         wrapper.appendChild(hoverableWrapper);
 
 
-        for (let ri = 0; ri < 7; ri++) {
+        for (let ri = 0; ri < maxMatrixSize; ri++) {
             const row = document.createElement("div");
             row.classList = ["row"];
             wrapper.appendChild(row);
@@ -25,7 +27,7 @@ class MatrixSizeInput extends HTMLElement {
             hoverableWrapper.appendChild(hoverableRow);
 
             
-            for (let ci = 0; ci < 7; ci++) {
+            for (let ci = 0; ci < maxMatrixSize; ci++) {
                 const square = document.createElement("div");
                 square.classList = ["square"];
                 square.setAttribute("data-row", ri+1);
@@ -35,6 +37,8 @@ class MatrixSizeInput extends HTMLElement {
                 hoverableSquare.classList = ["hoverable-square"];
                 hoverableSquare.setAttribute("data-row", ri+1);
                 hoverableSquare.setAttribute("data-col", ci+1);
+                let resolution = ri > ci ? ri : ci;
+                hoverableSquare.title = (resolution+1)+"x"+(resolution+1)
                 
                 hoverableSquare.addEventListener("mouseover", (e) => this.onHoverSquare(e));
                 hoverableSquare.addEventListener("click", (e) => this.onClickSquare(e));
@@ -44,9 +48,14 @@ class MatrixSizeInput extends HTMLElement {
             }
         }
 
+        const sizeTextWrapper = document.createElement("div");
+        sizeTextWrapper.classList = ['size-text-wrapper'];
+
         const sizeText = document.createElement("span");
         sizeText.classList = ["size-text"];
-        wrapper.appendChild(sizeText);
+
+        sizeTextWrapper.appendChild(sizeText)
+        wrapper.appendChild(sizeTextWrapper);
 
         this.shadowRoot.addEventListener("mouseout", (e) => this.onMouseOut(e))
 
@@ -73,16 +82,17 @@ class MatrixSizeInput extends HTMLElement {
                 z-index: 5;
             }
             .row {
-                height: 30.86px;
+                height: ${squareSize}px;
                 width: 100%;
                 display: flex;
             }
             .square, .hoverable-square {
-                height: 30.86px;
-                width: 30.86px;
+                height: ${squareSize}px;
+                width: ${squareSize}px;
             }
             .square {
                 border: 1px solid rgba(0,0,0,0.1);
+                transition: 0.15s;
             }
             .square.hovering {
                 background-color: #D2D2D2;
@@ -93,9 +103,17 @@ class MatrixSizeInput extends HTMLElement {
             .square.selected.hovering {
                 background-color: #5c7c89;
             }
-            .size-text {
+            .size-text-wrapper {
                 position: absolute;
                 z-index: 4;
+                top: 0;
+                left: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: 0.3s;
+            }
+            .size-text {
                 color: #fff;
                 font-size: 18px;
                 text-shadow: 0 0px 6px rgba(0,0,0,0.65)
@@ -164,9 +182,10 @@ class MatrixSizeInput extends HTMLElement {
         })
         this.value = newValue;
         this.updateSizeText();
-        let sizeText = this.shadowRoot.querySelector(".size-text");
-        sizeText.style.top = (30.86 * ((newValue-1) / 2))+"px";
-        sizeText.style.left = (30.86 * ((newValue-1) / 2))+"px";
+
+        let sizeTextWrapper = this.shadowRoot.querySelector(".size-text-wrapper");
+        sizeTextWrapper.style.width = (squareSize*newValue)+"px";
+        sizeTextWrapper.style.height = (squareSize*newValue)+"px";
     }
 }
 

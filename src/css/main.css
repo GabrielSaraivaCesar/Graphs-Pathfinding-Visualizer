@@ -12,6 +12,7 @@ canvas {
     width: 100%;
     height: 100%;
     background-color: rgb(231, 231, 231);
+    /* background-color: #f8f9fa; */
     cursor: grab;
 }
 
@@ -36,7 +37,7 @@ canvas {
     color: #2D2D2D;
 }
 
-.menu button {
+button {
     width: 100%;
     height: 52px;
     background: #008CC1;
@@ -56,7 +57,12 @@ canvas {
     transition: 0.3s;
 }
 
-.menu .input {
+button:hover {
+    box-shadow: 0px 4px 5px 1px #D6E8F5, 0px 3px 6px 5px #20222423 inset;
+}
+
+
+.input {
     width: 100%;
     height: 50px;
 
@@ -66,7 +72,7 @@ canvas {
     position: relative;
     transition: 0.15s;
 }
-.menu .input label {
+.input label {
     top: 8px;
     left: 8px;
     position: absolute;
@@ -78,33 +84,28 @@ canvas {
 
     color: #7D7D7D;
 }
-.menu .input input {
+.input input {
     background-color: transparent;
     border: none;
     width: 100%;
     height: 100%;
     outline: none;
-    padding: 8px;
-    padding-top: 20px;
+    padding: 2px 8px 8px 0;
 }
-.menu .input:focus-within {
+.input:focus-within {
     border-color: #008CC1;
     border-width: 1.5px;
 }
-.menu .input:focus-within label {
+.input:focus-within label {
     color: #008CC1;
 }
 
-.menu button:hover {
-    box-shadow: 0px 4px 5px 1px #D6E8F5, 0px 3px 6px 5px #20222423 inset;
-}
-
-.menu .input-multi-options {
+.input-multi-options {
     height: 50px;
     width: 100%;
     display: flex;
 }
-.menu .input-multi-options .opt input {
+.input-multi-options .opt input {
     appearance: none;
     width: 100%;
     height: 100%;
@@ -115,7 +116,7 @@ canvas {
     outline: none;
     cursor: pointer;
 }
-.menu .input-multi-options .opt {
+.input-multi-options .opt {
     width: 100%;
     height: 100%;
     border: 1px solid #D2D2D2;
@@ -127,24 +128,24 @@ canvas {
     cursor: pointer;
     overflow: hidden;
 }
-.menu .input-multi-options .opt:first-child {
+.input-multi-options .opt:first-child {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }
-.menu .input-multi-options .opt:last-child {
+.input-multi-options .opt:last-child {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }
-.menu .input-multi-options .opt:not(:nth-child(1)) {
+.input-multi-options .opt:not(:nth-child(1)) {
     border-left: 0;
 }
-.menu .input-multi-options .opt input:checked {
+.input-multi-options .opt input:checked {
     background-color: #008CC1;
 }
-.menu .input-multi-options .opt input:checked ~ label {
+.input-multi-options .opt input:checked ~ label {
     color: #ffffff;
 }
-.menu .input-multi-options label {
+.input-multi-options label {
     z-index: 2;
     color: #7D7D7D;
     font-size: 12px;
