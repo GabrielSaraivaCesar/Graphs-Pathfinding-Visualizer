@@ -45,7 +45,7 @@
             </div>
         </div>
         <vertical-spacing></vertical-spacing>
-        <button onclick="">Executar</button>
+        <button onclick="executeAlgorithm()">Executar</button>
     </div>
 </body>
 </html>
@@ -55,12 +55,37 @@
 <script src="./src/js/libs/graph/graph.js"></script>
 <script src="./src/js/libs/navigable-canvas/canvas.js"></script>
 <script src="./src/js/main.js"></script>
+<script type="module" src="./src/js/libs/graph/algorithms/dijkstra.js"></script>
+<script type="module" src="./src/js/libs/graph/algorithms/closest_path.js"></script>
 
-<script>
+<script type="module">
+import {generateDijkstraTable} from './src/js/libs/graph/algorithms/dijkstra.js';
+import {findClosestPath} from './src/js/libs/graph/algorithms/closest_path.js';
 
-function generateChart() {
+window.generateChart = function () {
     let matrixSize = document.getElementById("matrix-size").value;
-    generateNewScene(matrixSize);
+    currentGraph = generateNewScene(matrixSize);
+}
+
+window.executeAlgorithm = function () {
+    let startVertexTag = document.getElementById('initial-vertex').value;
+    let endVertexTag = document.getElementById('final-vertex').value;
+
+    let startVertex = currentGraph.vertices.find(vertex => {
+        return vertex.tag === startVertexTag;
+    });
+
+
+    let endVertex = currentGraph.vertices.find(vertex => {
+        return vertex.tag === endVertexTag;
+    });
+
+    if (!startVertex) {
+        console.error("Start vertex is not valid");
+        return;
+    }
+    let closestPath = findClosestPath(currentGraph, startVertex, endVertex);
+    console.log(closestPath);
 }
 
 </script>

@@ -8,15 +8,16 @@ class GraphEdge {
     /** @type {number} */
     value = 1;
 
-    /** @type {('AB'|'BA')} */
-    direction = null;
+    /** @type {boolean} */
+    directed = false;
 
-    constructor(vertexA, vertexB, value = 1) {
+    constructor(vertexA, vertexB, value = 1, directed = false) {
         this.vertexA = vertexA;
         this.vertexB = vertexB;
         this.value = value;
         this.vertexA.edges.push(this);
         this.vertexB.edges.push(this);
+        this.directed = directed;
     }
 }
 
@@ -59,4 +60,9 @@ class Graph {
     /** @type {GraphEdge[]} */
     edges = [];
 
+    findEdges(vertexA, vertexB) {
+        return this.edges.filter(edge => {
+            return (edge.vertexA == vertexA && edge.vertexB == vertexB) || (edge.vertexB == vertexA && edge.vertexA == vertexB)
+        });
+    }
 }

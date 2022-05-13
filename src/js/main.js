@@ -197,5 +197,6 @@ function drawEdge(edge, paralels=false) {
     }
 }
 
-generateNewScene();
+/** @type {Graph} */
+let currentGraph = generateNewScene();
 
