@@ -58,7 +58,7 @@
 
 <script type="module">
 import {generateDijkstraTable} from './src/js/libs/graph/algorithms/dijkstra.js';
-import {findsmallerPath} from './src/js/libs/graph/algorithms/closest_path.js';
+import {findsmallerPath} from './src/js/libs/graph/algorithms/smaller_path.js';
 import {findChineseMailerPath} from './src/js/libs/graph/algorithms/chinese_mailer.js';
 import {NotReachablePathException} from './src/js/libs/graph/algorithms/shared.js';
 
@@ -75,7 +75,7 @@ window.generateChart = function () {
     updateVertexInputOptions();
 }
 
-window.executeAlgorithm = function () {
+window.executeAlgorithm = async function () {
     scene.sceneObjects = scene.sceneObjects.filter(obj => {
         if (obj.tag.split("-")[0] === "path") {
             return false;
@@ -108,7 +108,7 @@ window.executeAlgorithm = function () {
     if (algorithmChoice === "smaller-path") {
         path = findsmallerPath(currentGraph, startVertex, endVertex);
     } else if (algorithmChoice === "chinese-mailer") {
-        path = findChineseMailerPath(currentGraph, startVertex, endVertex);
+        path = await findChineseMailerPath(currentGraph, startVertex, endVertex);
     }
 
     drawPath("path-"+startVertex.tag+"-"+endVertex.tag, path.path)
@@ -118,6 +118,7 @@ window.executeAlgorithm = function () {
 
 function drawPath(name, path) {
     if (path.length === 0) return;
+    const spacingFromCenter = 0;
     scene.addObject(name, () => {
         let startVertexFromPath = currentGraph.vertices.find(v => v.tag == path[0])
         let lastPos = {
@@ -128,8 +129,23 @@ function drawPath(name, path) {
             scene.context.beginPath();
             let currentVertex = currentGraph.vertices.find(v => v.tag == vertexTag);
 
-            scene.context.moveTo(lastPos.x, lastPos.y);
-            scene.context.lineTo(currentVertex.posX, currentVertex.posY);
+            let from = {
+                x: lastPos.x - spacingFromCenter,
+                y: lastPos.y + spacingFromCenter,
+            }
+            let to = {
+                x: currentVertex.posX - spacingFromCenter,
+                y: currentVertex.posY + spacingFromCenter
+            }
+            scene.context.lineWidth = 5
+
+            scene.context.moveTo(from.x, from.y);
+            scene.context.lineTo(to.x, to.y);
+            scene.context.stroke();
+            scene.context.fill();
+            scene.context.closePath();
+
+            drawArrowhead(scene.context, from, to, 5)
             lastPos.x = currentVertex.posX;
             lastPos.y = currentVertex.posY;
             scene.context.lineWidth = 5
@@ -142,6 +158,37 @@ function drawPath(name, path) {
     scene.draw();
 }
 
+function drawArrowhead(context, from, to, radius) {
+	var x_center = to.x;
+	var y_center = to.y;
 
+	var angle;
+	var x;
+	var y;
+
+	context.beginPath();
+
+	angle = Math.atan2(to.y - from.y, to.x - from.x)
+	x = radius * Math.cos(angle) + x_center;
+	y = radius * Math.sin(angle) + y_center;
+
+	context.moveTo(x, y);
+
+	angle += (1.0/3.0) * (2 * Math.PI)
+	x = radius * Math.cos(angle) + x_center;
+	y = radius * Math.sin(angle) + y_center;
+
+	context.lineTo(x, y);
+
+	angle += (1.0/3.0) * (2 * Math.PI)
+	x = radius *Math.cos(angle) + x_center;
+	y = radius *Math.sin(angle) + y_center;
+
+	context.lineTo(x, y);
+
+	context.closePath();
+
+	context.fill();
+}
 
 </script>

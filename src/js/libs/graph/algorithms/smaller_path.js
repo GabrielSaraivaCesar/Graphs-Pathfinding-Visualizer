@@ -1,10 +1,16 @@
 import {generateDijkstraTable} from './dijkstra.js';
 import { NotReachablePathException } from './shared.js';
-
+/**
+ * @typedef PathObject
+ * @property {string[]} path
+ * @property {number} value
+ */
 /** 
  * @param {Graph} graph
  * @param {GraphVertex} startVertex
  * @param {GraphVertex} endVertex
+ * @param {boolean?} soft 
+ * @returns {PathObject}
  */
 function findsmallerPath(graph, startVertex, endVertex, soft=false) {
     let dijkstraDistanceTable = generateDijkstraTable(graph, startVertex);

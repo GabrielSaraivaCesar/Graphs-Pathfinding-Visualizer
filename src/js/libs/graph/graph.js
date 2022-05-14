@@ -48,6 +48,7 @@ class GraphVertex {
         return result;
     }
 
+
     constructor(tag) {
         this.tag = tag;
     }
