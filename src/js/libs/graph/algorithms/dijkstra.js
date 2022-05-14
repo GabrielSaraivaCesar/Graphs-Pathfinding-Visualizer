@@ -22,14 +22,14 @@ function generateDijkstraTable(graph, startVertex) {
         queue.shift();
         visitedVertices.push(currentVertex);
 
-        let closestPathValueToCurrentVertex = null;
+        let smallerPathValueToCurrentVertex = null;
         Object.keys(distancesTable[currentVertex.tag]).forEach(key => {
-            if (closestPathValueToCurrentVertex === null || distancesTable[currentVertex.tag][key] < closestPathValueToCurrentVertex) {
-                closestPathValueToCurrentVertex = distancesTable[currentVertex.tag][key];
+            if (smallerPathValueToCurrentVertex === null || distancesTable[currentVertex.tag][key] < smallerPathValueToCurrentVertex) {
+                smallerPathValueToCurrentVertex = distancesTable[currentVertex.tag][key];
             }
         });
-        if (closestPathValueToCurrentVertex === null) {
-            closestPathValueToCurrentVertex = 0;
+        if (smallerPathValueToCurrentVertex === null) {
+            smallerPathValueToCurrentVertex = 0;
         }
 
         let sortedEdges = currentVertex.edges.sort((a, b) => {
@@ -57,7 +57,7 @@ function generateDijkstraTable(graph, startVertex) {
                 }
             })
 
-            distancesTable[neighbor.tag][currentVertex.tag] = edge.value + closestPathValueToCurrentVertex;
+            distancesTable[neighbor.tag][currentVertex.tag] = edge.value + smallerPathValueToCurrentVertex;
         })
 
         // Adding vertices to the queue (closest to furthest)

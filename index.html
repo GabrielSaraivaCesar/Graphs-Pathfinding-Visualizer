@@ -40,7 +40,7 @@
                 <label for="caixeiro-viajante">Caix. Viag.</label>
             </div>
             <div class="opt">
-                <input id="caminho-curto" type="radio" name="algorithm-choice" value="closest-path">
+                <input id="caminho-curto" type="radio" name="algorithm-choice" value="smaller-path">
                 <label for="caminho-curto">Mais Curto</label>
             </div>
         </div>
@@ -58,7 +58,7 @@
 
 <script type="module">
 import {generateDijkstraTable} from './src/js/libs/graph/algorithms/dijkstra.js';
-import {findClosestPath} from './src/js/libs/graph/algorithms/closest_path.js';
+import {findsmallerPath} from './src/js/libs/graph/algorithms/closest_path.js';
 import {findChineseMailerPath} from './src/js/libs/graph/algorithms/chinese_mailer.js';
 import {NotReachablePathException} from './src/js/libs/graph/algorithms/shared.js';
 
@@ -104,20 +104,15 @@ window.executeAlgorithm = function () {
 
 
     
-    try {
-        let path = null;
-        if (algorithmChoice === "closest-path") {
-            path = findClosestPath(currentGraph, startVertex, endVertex);
-        } else if (algorithmChoice === "chinese-mailer") {
-            path = findChineseMailerPath(currentGraph, startVertex, endVertex);
-        }
-    
-        drawPath("path-"+startVertex.tag+"-"+endVertex.tag, path.path)
-        scene.draw();
-    } catch (err) {
-        if (err instanceof NotReachablePathException) {
-        }
+    let path = null;
+    if (algorithmChoice === "smaller-path") {
+        path = findsmallerPath(currentGraph, startVertex, endVertex);
+    } else if (algorithmChoice === "chinese-mailer") {
+        path = findChineseMailerPath(currentGraph, startVertex, endVertex);
     }
+
+    drawPath("path-"+startVertex.tag+"-"+endVertex.tag, path.path)
+    scene.draw();
     
 }
 

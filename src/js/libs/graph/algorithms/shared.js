@@ -3,4 +3,24 @@ class NotReachablePathException extends Error {
     name = "NotReachablePathException"
 }
 
-export {NotReachablePathException}
+/**
+ * 
+ * @param {Array} arr 
+ * @param {Function} callback 
+ */
+function forEachPreventingFreezing(arr, callback) {
+    return new Promise(resolve => {
+        let resolvedCounter = 0;
+        arr.forEach((item, index) => {
+            window.setTimeout(() => {
+                callback(item, index);
+                resolvedCounter++;
+                if (resolvedCounter == item.length) {
+                    resolve(arr);
+                }
+            }, index * 10)
+        })
+    })
+}
+
+export {NotReachablePathException, forEachPreventingFreezing}

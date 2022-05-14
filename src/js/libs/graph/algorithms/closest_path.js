@@ -6,11 +6,13 @@ import { NotReachablePathException } from './shared.js';
  * @param {GraphVertex} startVertex
  * @param {GraphVertex} endVertex
  */
-function findClosestPath(graph, startVertex, endVertex) {
+function findsmallerPath(graph, startVertex, endVertex, soft=false) {
     let dijkstraDistanceTable = generateDijkstraTable(graph, startVertex);
     if (Object.keys(dijkstraDistanceTable[endVertex.tag]).length === 0) {
+        if (soft) return null;
         throw new NotReachablePathException()
     }
+
     let path = [];
     let value = null;
     Object.keys(dijkstraDistanceTable[endVertex.tag]).forEach(key => {
@@ -35,4 +37,4 @@ function findClosestPath(graph, startVertex, endVertex) {
     return {path: path, value: value};
 }
 
-export {findClosestPath}
+export {findsmallerPath}

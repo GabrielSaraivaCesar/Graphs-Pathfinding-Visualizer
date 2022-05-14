@@ -1,6 +1,6 @@
-import { NotReachablePathException } from './shared.js';
+import { NotReachablePathException, forEachPreventingFreezing } from './shared.js';
 import { generateDijkstraTable } from './dijkstra.js';
-import {findClosestPath} from './closest_path.js';
+import {findsmallerPath} from './closest_path.js';
 
 /** 
  * @param {Graph} graph
@@ -35,35 +35,10 @@ function findChineseMailerPath(graph, startVertex, endVertex) {
     return path;
 }
 
-function graphToEulerian(graph) {
+async function graphToEulerian(graph) {
     let oddDegreeVertices = graph.vertices.filter(v => v.degree % 2 !== 0);
     let analysisPaths = {}
-    console.log(oddDegreeVertices)
 
-    oddDegreeVertices.forEach(vertex => {
-        analysisPaths[vertex.tag] = {
-            vertex: vertex,
-            distances: [
-                {
-                    targetVertex: null,
-                    value: 0
-                }
-            ]
-        }
-
-        oddDegreeVertices.filter(v => v != vertex).forEach(targetVertex => {
-            let closestPath = findClosestPath(graph, vertex, targetVertex);
-            analysisPaths[vertex.tag].distances.push({
-                targetVertex: targetVertex,
-                value: closestPath.value,
-                path: closestPath.path
-            })
-        })
-    })
-
-    let combinatorialAnalysis = [];
-
-    console.log(analysisPaths);
 }
 
 export {findChineseMailerPath}
