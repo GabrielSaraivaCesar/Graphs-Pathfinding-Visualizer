@@ -33,4 +33,5 @@ TODO
 #### Bridges Detector
 The bridge detector works by iterating through all the edges, running a DFS algorithm starting from any of its vertices, then removing the edge from the graph and running the DFS algorithm again.
 If the outputs of the 2 DFS are different, the current edge is a bridge 
+
 ![Captura de tela de 2022-05-15 03-14-08](https://user-images.githubusercontent.com/43767905/168459771-6a5be02c-944d-4956-97da-03fb1f30d0be.png)
