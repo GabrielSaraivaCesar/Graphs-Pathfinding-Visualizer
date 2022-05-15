@@ -7,7 +7,7 @@ import { NotReachablePathException } from './shared.js';
  * @param {GraphVertex} startVertex
  * @param {GraphVertex} endVertex
  */
-async function findChineseMailerPath(graph, startVertex) {
+async function findChinesePostmanPath(graph, startVertex) {
     let dijkstraDistanceTable = generateDijkstraTable(graph, startVertex);
     let tableKeys = Object.keys(dijkstraDistanceTable);
     for (let i = 0; i < tableKeys.length; i++) {
@@ -28,4 +28,4 @@ async function findChineseMailerPath(graph, startVertex) {
 }
 
 
-export {findChineseMailerPath}
+export {findChinesePostmanPath}

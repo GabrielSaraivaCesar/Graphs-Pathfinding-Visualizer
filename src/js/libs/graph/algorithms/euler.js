@@ -17,7 +17,7 @@ import {isBridge} from './bridges.js';
         return;
     } else if (oddDegreeVertices.length === 2){
         let spath = findsmallerPath(graph, oddDegreeVertices[0], oddDegreeVertices[1]);
-        addEdgesIntoPathes(graph, spath);
+        addEdgesIntoPathes(graph, [spath.path]);
         return;
     }
     

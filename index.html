@@ -25,7 +25,7 @@
         <h3>Algoritmo</h3>
         <div class="input-multi-options">
             <div class="opt">
-                <input id="carteiro-chines" type="radio" name="algorithm-choice" value="chinese-mailer" checked>
+                <input id="carteiro-chines" type="radio" name="algorithm-choice" value="chinese-postman" checked>
                 <label for="carteiro-chines">Cart. Chin.</label>
             </div>
             <div class="opt">
@@ -84,7 +84,7 @@
 <script type="module">
 import {generateDijkstraTable} from './src/js/libs/graph/algorithms/dijkstra.js';
 import {findsmallerPath} from './src/js/libs/graph/algorithms/smaller_path.js';
-import {findChineseMailerPath} from './src/js/libs/graph/algorithms/chinese_mailer.js';
+import {findChinesePostmanPath} from './src/js/libs/graph/algorithms/chinese_postman.js';
 import {NotReachablePathException} from './src/js/libs/graph/algorithms/shared.js';
 import {detectBridges} from './src/js/libs/graph/algorithms/bridges.js';
 
@@ -143,9 +143,9 @@ window.executeAlgorithm = async function () {
                 showAlert("error", "Este caminho é inalcançável!");
             }
         }
-    } else if (algorithmChoice === "chinese-mailer") {
+    } else if (algorithmChoice === "chinese-postman") {
         try {
-            path = await findChineseMailerPath(currentGraph, startVertex, endVertex);
+            path = await findChinesePostmanPath(currentGraph, startVertex, endVertex);
             console.log(path.path)
             showAlert("success", "Caminho traçado!");
         } catch (err) {
@@ -276,12 +276,12 @@ function reorderSceneObjects() {
         let tagA = objA.tag.split("-")[0];
         let tagB = objB.tag.split("-")[0];
         
-        if (tagA === "edge" && (tagB === "path" || tagB === "vertex")) return -1;
-        if (tagA === "vertex" && (tagB === "edge" || tagB === "path")) return 1;
+        if (tagA === "edge" && (tagB === "path" || tagB === "bridge" || tagB === "vertex")) return -1;
+        if (tagA === "vertex" && (tagB === "edge" || tagB === "path" || tagB === "bridge")) return 1;
 
 
-        if (tagB === "edge" && (tagA === "path" || tagA === "vertex")) return 1;
-        if (tagB === "vertex" && (tagA === "edge" || tagA === "path")) return -1;
+        if (tagB === "edge" && (tagA === "path" || tagA === "bridge" || tagA === "vertex")) return 1;
+        if (tagB === "vertex" && (tagA === "edge" || tagA === "path" || tagA === "bridge")) return -1;
 
         return 0;
     });
@@ -335,6 +335,7 @@ window.drawBridges = function() {
             scene.context.closePath();
         })
     });
+    reorderSceneObjects();
     scene.draw();
 }
 

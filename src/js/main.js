@@ -158,6 +158,7 @@ function linkEdges(row, rowIndex, col, colIndex, graph, WCFMatrix) {
 
 function drawVertex(vertex) {
     scene.context.beginPath();
+    scene.context.lineWidth = 1;
     scene.context.arc(vertex.posX, vertex.posY, 40, 0, 2 * Math.PI);
     scene.context.fillStyle = "#d6e8f5"
     scene.context.strokeStyle = "#008cc1"
