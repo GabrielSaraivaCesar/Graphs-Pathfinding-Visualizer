@@ -49,6 +49,8 @@ function generateNewScene(matrixSize=4) {
 function linkEdges(row, rowIndex, col, colIndex, graph, WCFMatrix) {
     let edgeValue = Math.floor(Math.random() * (maxEdgeValue - minEdgeValue)) + minEdgeValue;
 
+    edgeValue = 1; // TODO remove
+
     // Find next vertex
     // RightSide
     if (colIndex < row.length-1) {

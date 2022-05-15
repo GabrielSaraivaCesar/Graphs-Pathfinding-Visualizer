@@ -12,13 +12,17 @@ class GraphEdge {
     /** @type {boolean} */
     directed = false;
 
-    constructor(vertexA, vertexB, value = 1, directed = false) {
+    /** @type {boolean} */
+    artificial = false;
+
+    constructor(vertexA, vertexB, value = 1, directed = false, artificial = false) {
         this.vertexA = vertexA;
         this.vertexB = vertexB;
         this.value = value;
         this.vertexA.edges.push(this);
         this.vertexB.edges.push(this);
         this.directed = directed;
+        this.artificial = artificial;
     }
 }
 
@@ -36,6 +40,7 @@ class GraphVertex {
         return this.edges.length;
     }
 
+    /** @type {GraphVertex[]} */
     get neighbors() {
         let result = [];
         this.edges.forEach(edge => {
@@ -79,4 +84,10 @@ class Graph {
         });
     }
 
+    removeArtificialEdges() {
+        this.edges = this.edges.filter(e => !e.artificial);
+        this.vertices.forEach(vertex => {
+            vertex.edges = vertex.edges.filter(e => !e.artificial);
+        });
+    }
 }

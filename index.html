@@ -9,17 +9,22 @@
     <link rel="stylesheet" href="./src/css/main.css">
     <link rel="stylesheet" href="./src/css/matrix_size_input.css">
     <link rel="stylesheet" href="./src/css/alerts.css">
+    <link rel="stylesheet" href="./src/css/loading.css">
     <link rel="stylesheet" href="./src/css/fontawesome/css/all.min.css">
     <script src="./src/js/components/matrix_size_input.js" ></script>
     <script src="./src/js/components/searchable_select_input.js" ></script>
 </head>
 <body>
     <canvas id="graphs-canvas"></canvas>
+    <div class="loading-bar">
+
+    </div>
+
     <div class="menu">
         <h3>Tamanho da Matriz</h3>
         <matrix-size-input id="matrix-size"></matrix-size-input>
         <vertical-spacing></vertical-spacing>
-        <button onclick="generateChart()">Gerar Grafo</button>
+        <button id="generate-graph-btn" onclick="generateChart()">Gerar Grafo</button>
         <vertical-spacing></vertical-spacing>
         <vertical-spacing></vertical-spacing>
         <h3>Algoritmo</h3>
@@ -49,7 +54,7 @@
         
         <vertical-spacing></vertical-spacing>
         <div class="flex">
-            <button class="w-70" onclick="executeAlgorithm()">Executar</button>
+            <button id="execute-btn" class="w-70" onclick="executeAlgorithm()">Executar</button>
             <horizontal-spacing class="small"></horizontal-spacing>
             <button class="w-30 secondary" onclick="clearPath()"><i class="fa-solid fa-eraser"></i></button>
         </div>
@@ -58,7 +63,7 @@
         <vertical-spacing></vertical-spacing>
         <h3>Outros</h3>
         <div class="flex">
-            <button class="w-70" onclick="drawBridges()">Exibir Pontes</button>
+            <button id="bridges-btn" class="w-70" onclick="drawBridges()">Exibir Pontes</button>
             <horizontal-spacing class="small"></horizontal-spacing>
             <button class="w-30 secondary" onclick="clearBridges()"><i class="fa-solid fa-eraser"></i></button>
         </div>
@@ -71,10 +76,16 @@
             <i class="fa-solid fa-xmark"></i>
         </div>
     </div>
+
+    <a target="_blank" href="https://github.com/GabrielSaraivaCesar/Graphs-Pathfinding-Visualizer/issues/new" class="bug-report" title="Report a bug">
+        <i class="fa-solid fa-bug"></i>
+    </a>
+    
 </body>
 </html>
 
 <script src="./src/js/alerts.js"></script>
+<script src="./src/js/loading.js"></script>
 <script src="./src/js/shared/constants.js"></script>
 <script src="./src/js/wave_collapse_function.js"></script>
 <script src="./src/js/libs/graph/graph.js"></script>
@@ -122,7 +133,6 @@ window.executeAlgorithm = async function () {
         return;
     }
 
-
     
     let path = {path: [], value: 0};
     if (algorithmChoice === "smaller-path") {
@@ -146,7 +156,6 @@ window.executeAlgorithm = async function () {
     } else if (algorithmChoice === "chinese-postman") {
         try {
             path = await findChinesePostmanPath(currentGraph, startVertex, endVertex);
-            console.log(path.path)
             showAlert("success", "Caminho traçado!");
         } catch (err) {
             console.error(err);
@@ -156,7 +165,9 @@ window.executeAlgorithm = async function () {
         }
     }
 
+    scene.resetAnimationFrame();
     drawPath("path-"+(startVertex?.tag || "?")+"-"+(endVertex?.tag || "?"), path.path)
+    drawPathAnimation("path-animation-"+(startVertex?.tag || "?")+"-"+(endVertex?.tag || "?"), path.path);
     scene.draw();
     
 }
@@ -205,6 +216,77 @@ function addSpacingBasedOnLineDestination(from, to) {
             }
         }
     }
+}
+
+function drawPathAnimation( name, path ) {
+    if (path.length === 0) return;
+    scene.addObject(name, () => {
+        let animationFrameBySpeed = scene.animationFrame*2;
+
+        if (animationFrameBySpeed > path.length - 1) {
+            scene.resetAnimationFrame();
+        }
+        let pathIndex = parseInt(animationFrameBySpeed);
+        let progress = animationFrameBySpeed - pathIndex;
+
+        let startVertex = currentGraph.vertices.find(v => v.tag == path[pathIndex]);
+        
+
+        let pos = {
+            x: startVertex.posX,
+            y: startVertex.posY
+        }
+        if (pathIndex < path.length - 1) {
+            let endVertex = currentGraph.vertices.find(v => v.tag == path[pathIndex+1]);
+            let diffX = (endVertex.posX - startVertex.posX) * progress;
+            pos.x += diffX;
+
+            let diffY = (endVertex.posY - startVertex.posY) * progress;
+            pos.y += diffY;
+        }
+
+        scene.context.beginPath();
+        scene.context.lineWidth = 2
+        scene.context.strokeStyle = "#000000";
+        scene.context.fillStyle = "#f5ce42";
+        scene.context.arc(pos.x, pos.y, 5, 0, 2 * Math.PI);
+        scene.context.stroke();
+        scene.context.fill();
+        scene.context.closePath();
+
+        scene.context.beginPath();
+        scene.context.lineWidth = 5
+        scene.context.strokeStyle = "#f5ce42";
+        scene.context.moveTo(startVertex.posX, startVertex.posY);
+        scene.context.lineTo(pos.x, pos.y);
+        scene.context.stroke();
+        scene.context.closePath();
+
+        for (let i = 0; i < pathIndex; i++) {
+            let currentV = currentGraph.vertices.find(v => v.tag == path[i]);
+
+            let currentPos = {
+                x: currentV.posX,
+                y: currentV.posY
+            }
+
+            let nextV = currentGraph.vertices.find(v => v.tag == path[i+1]); 
+
+            let nextPos = {
+                x: nextV.posX,
+                y: nextV.posY
+            }
+
+            scene.context.beginPath();
+            scene.context.lineWidth = 5
+            scene.context.strokeStyle = "#f5ce42";
+            scene.context.moveTo(currentPos.x, currentPos.y);
+            scene.context.lineTo(nextPos.x, nextPos.y);
+            scene.context.stroke();
+            scene.context.closePath();
+        }
+        
+    });
 }
 
 function drawPath(name, path) {

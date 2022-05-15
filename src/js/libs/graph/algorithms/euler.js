@@ -49,6 +49,7 @@ import {isBridge} from './bridges.js';
                     resolve()
                 })
             })
+            changeLoadingProgress(i+(j/oddDegreeVertices.length), oddDegreeVertices.length);
         }
     }
 
@@ -101,6 +102,8 @@ import {isBridge} from './bridges.js';
         }
     })
 
+    console.log(combinationResult, lowerCombinationPathes, paths)
+
     /* Adding the new edges to make it eulerian */
     addEdgesIntoPathes(graph, lowerCombinationPathes);    
 }
@@ -126,7 +129,7 @@ function addEdgesIntoPathes(graph, pathes) {
             });
 
             graph.edges.push(
-                new GraphEdge(vertexA, vertexB, bestEdge.value, bestEdge.directed)
+                new GraphEdge(vertexA, vertexB, bestEdge.value, bestEdge.directed, true)
             );
         }
     });
@@ -148,10 +151,11 @@ function findEulerianCycle(graph, startVertex) {
     while (currentVertex != startVertex || edgesCount > 0) {
         /** @type {GraphEdge} */
         let selectedEdge = null;
-
+        
         for (let i = 0; i < currentVertex.edges.length; i++) {
             let _edge = currentVertex.edges[i];
             let edgeIsBridge = isBridge(_edge);
+
             if (edgeIsBridge && i < currentVertex.edges.length-1) {
                 continue;
             } else {

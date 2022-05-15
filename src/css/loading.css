@@ -1,0 +1,13 @@
+
+.loading-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 6px;
+    display: none;
+    background-color: #008CC1;
+    box-shadow: 0 1px 6px #008CC1;
+    z-index: 3;
+    transition: 0.1s;
+}

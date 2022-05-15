@@ -1,4 +1,5 @@
 const lowerScale = 0.5;
+const animationFPS = 60;
 
 class SceneObject {
     tag = "";
@@ -22,6 +23,8 @@ class Scene {
     translateX = 0;
     translateY = 0;
 
+    animationFrame = 0;
+    lastAnimationFrame = null;
 
     /** @type {SceneObject[]}  */
     sceneObjects = []
@@ -39,6 +42,7 @@ class Scene {
         this.canvas.addEventListener("mouseleave", (e) => this.setIsTranslatingFalse(e, true));
         this.canvas.addEventListener("mousemove", (e) => this.onTranslate(e));
         this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+        setInterval(() => this.runAnimationFrame(), 1000/animationFPS);
 
     }
 
@@ -49,6 +53,20 @@ class Scene {
 
     clearScene() {
         this.sceneObjects = [];
+    }
+
+    resetAnimationFrame() {
+        this.animationFrame = 0;
+    }
+
+    runAnimationFrame() {
+        let timeDelta = new Date().getTime() - this.lastAnimationFrame;
+        if (this.lastAnimationFrame === null) timeDelta = 0;
+
+        this.animationFrame += 1 * (timeDelta/1000);
+
+        this.draw();
+        this.lastAnimationFrame = new Date().getTime();
     }
 
     draw() {
