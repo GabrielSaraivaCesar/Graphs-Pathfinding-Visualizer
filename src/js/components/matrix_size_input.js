@@ -1,4 +1,4 @@
-const maxMatrixSize = 15;
+const maxMatrixSize = 10;
 const inputSize = 216;
 const squareSize = inputSize / maxMatrixSize;
 
@@ -62,8 +62,8 @@ class MatrixSizeInput extends HTMLElement {
         const style = document.createElement("style");
         style.textContent = `
             .wrapper {
-                width: 216px;
-                height: 216px;
+                width: ${inputSize}px;
+                height: ${inputSize}px;
                 border-radius: 5px;
                 background-color: #EFEFEF;
                 display: flex;
