@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,6 +8,8 @@
 
     <link rel="stylesheet" href="./src/css/main.css">
     <link rel="stylesheet" href="./src/css/matrix_size_input.css">
+    <link rel="stylesheet" href="./src/css/alerts.css">
+    <link rel="stylesheet" href="./src/css/fontawesome/css/all.min.css">
     <script src="./src/js/components/matrix_size_input.js" ></script>
     <script src="./src/js/components/searchable_select_input.js" ></script>
 </head>
@@ -21,15 +23,6 @@
         <vertical-spacing></vertical-spacing>
         <vertical-spacing></vertical-spacing>
         <h3>Algoritmo</h3>
-
-        <div style="z-index: 6; position: relative;">
-            <searchable-select-input id="initial-vertex" label="Vértice Inicial" options='[{"label": "v0-0", "value": "v0-0"}]'></searchable-select-input>
-        </div>
-        <vertical-spacing></vertical-spacing>
-        <div style="z-index: 5; position: relative;">
-            <searchable-select-input id="final-vertex" label="Vértice Final" options='[{"label": "v0-0", "value": "v0-0"}]'></searchable-select-input>
-        </div>
-        <vertical-spacing></vertical-spacing>
         <div class="input-multi-options">
             <div class="opt">
                 <input id="carteiro-chines" type="radio" name="algorithm-choice" value="chinese-mailer" checked>
@@ -45,11 +38,43 @@
             </div>
         </div>
         <vertical-spacing></vertical-spacing>
-        <button onclick="executeAlgorithm()">Executar</button>
+
+        <div style="z-index: 6; position: relative;">
+            <searchable-select-input id="initial-vertex" label="Vértice Inicial" options='[{"label": "v0-0", "value": "v0-0"}]'></searchable-select-input>
+        </div>
+        <vertical-spacing></vertical-spacing>
+        <div style="z-index: 5; position: relative;">
+            <searchable-select-input id="final-vertex" label="Vértice Final" options='[{"label": "v0-0", "value": "v0-0"}]'></searchable-select-input>
+        </div>
+        
+        <vertical-spacing></vertical-spacing>
+        <div class="flex">
+            <button class="w-70" onclick="executeAlgorithm()">Executar</button>
+            <horizontal-spacing class="small"></horizontal-spacing>
+            <button class="w-30 secondary" onclick="clearPath()"><i class="fa-solid fa-eraser"></i></button>
+        </div>
+
+        <vertical-spacing></vertical-spacing>
+        <vertical-spacing></vertical-spacing>
+        <h3>Outros</h3>
+        <div class="flex">
+            <button class="w-70" onclick="drawBridges()">Exibir Pontes</button>
+            <horizontal-spacing class="small"></horizontal-spacing>
+            <button class="w-30 secondary" onclick="clearBridges()"><i class="fa-solid fa-eraser"></i></button>
+        </div>
+    </div>
+    <div class="alerts-container">
+        <div class="alert" onclick="closeAlert()">
+            <span class="alert-text">
+                
+            </span>
+            <i class="fa-solid fa-xmark"></i>
+        </div>
     </div>
 </body>
 </html>
 
+<script src="./src/js/alerts.js"></script>
 <script src="./src/js/shared/constants.js"></script>
 <script src="./src/js/wave_collapse_function.js"></script>
 <script src="./src/js/libs/graph/graph.js"></script>
@@ -61,6 +86,7 @@ import {generateDijkstraTable} from './src/js/libs/graph/algorithms/dijkstra.js'
 import {findsmallerPath} from './src/js/libs/graph/algorithms/smaller_path.js';
 import {findChineseMailerPath} from './src/js/libs/graph/algorithms/chinese_mailer.js';
 import {NotReachablePathException} from './src/js/libs/graph/algorithms/shared.js';
+import {detectBridges} from './src/js/libs/graph/algorithms/bridges.js';
 
 function updateVertexInputOptions() {
     let options = JSON.stringify(currentGraph.vertices.map(vertex => ({label: vertex.tag, value: vertex.tag})));
@@ -76,13 +102,7 @@ window.generateChart = function () {
 }
 
 window.executeAlgorithm = async function () {
-    scene.sceneObjects = scene.sceneObjects.filter(obj => {
-        if (obj.tag.split("-")[0] === "path") {
-            return false;
-        }
-        return true;
-    })
-    scene.draw();
+    window.clearPath();
 
     let startVertexTag = document.getElementById('initial-vertex').value;
     let endVertexTag = document.getElementById('final-vertex').value;
@@ -98,73 +118,183 @@ window.executeAlgorithm = async function () {
     });
 
     if (!startVertex) {
-        console.error("Start vertex is not valid");
+        showAlert("warning", "Vértice inicial não é valido!");
         return;
     }
 
 
     
-    let path = null;
+    let path = {path: [], value: 0};
     if (algorithmChoice === "smaller-path") {
-        path = findsmallerPath(currentGraph, startVertex, endVertex);
+        if (!endVertex) {
+            showAlert("warning", "Este algoritmo precisa de um vértice final!");
+            return;
+        }
+        if (startVertex === endVertex) {
+            showAlert("warning", "O vértice final precisa ser diferente do inicial!");
+            return;
+        }
+        try {
+            path = findsmallerPath(currentGraph, startVertex, endVertex);
+            showAlert("success", "Caminho traçado!");
+        } catch (err) {
+            console.error(err);
+            if (err instanceof NotReachablePathException) {
+                showAlert("error", "Este caminho é inalcançável!");
+            }
+        }
     } else if (algorithmChoice === "chinese-mailer") {
-        path = await findChineseMailerPath(currentGraph, startVertex, endVertex);
+        try {
+            path = await findChineseMailerPath(currentGraph, startVertex, endVertex);
+            console.log(path.path)
+            showAlert("success", "Caminho traçado!");
+        } catch (err) {
+            console.error(err);
+            if (err instanceof NotReachablePathException) {
+                showAlert("error", "Este grafo é inválido pois possúi multiplos componentes");
+            }
+        }
     }
 
-    drawPath("path-"+startVertex.tag+"-"+endVertex.tag, path.path)
+    drawPath("path-"+(startVertex?.tag || "?")+"-"+(endVertex?.tag || "?"), path.path)
     scene.draw();
     
 }
 
+window.clearPath = function() {
+    scene.sceneObjects = scene.sceneObjects.filter(obj => {
+        if (obj.tag.split("-")[0] === "path") {
+            return false;
+        }
+        return true;
+    });
+    scene.draw();
+}
+
+function addSpacingBasedOnLineDestination(from, to) {
+    const spacingFromCenter = 15;
+
+    if (from.y === to.y && from.x < to.x) {
+        from.y += spacingFromCenter;
+        to.y += spacingFromCenter;
+    } else if (from.y === to.y && from.x > to.x) {
+        from.y -= spacingFromCenter;
+        to.y -= spacingFromCenter;
+    } else if (from.y > to.y && from.x === to.x) {
+        from.x += spacingFromCenter;
+        to.x += spacingFromCenter;
+    } else if (from.y < to.y && from.x === to.x) {
+        from.x -= spacingFromCenter;
+        to.x -= spacingFromCenter;
+    } else {
+        if (from.y < to.y) {
+            if (from.x < to.x) {
+                from.y += spacingFromCenter;
+                to.x -= spacingFromCenter;
+            } else {
+                from.x -= spacingFromCenter;
+                to.y -= spacingFromCenter;
+            }
+        } else {
+            if (from.x < to.x) {
+                from.x += spacingFromCenter;
+                to.y += spacingFromCenter;
+            } else {
+                from.y -= spacingFromCenter;
+                to.x += spacingFromCenter;
+            }
+        }
+    }
+}
+
 function drawPath(name, path) {
     if (path.length === 0) return;
-    const spacingFromCenter = 0;
     scene.addObject(name, () => {
         let startVertexFromPath = currentGraph.vertices.find(v => v.tag == path[0])
         let lastPos = {
             x: startVertexFromPath.posX,
             y: startVertexFromPath.posY,
         }
-        path.forEach(vertexTag => {
-            scene.context.beginPath();
+        path.forEach((vertexTag, vertexIndex) => {
             let currentVertex = currentGraph.vertices.find(v => v.tag == vertexTag);
 
             let from = {
-                x: lastPos.x - spacingFromCenter,
-                y: lastPos.y + spacingFromCenter,
+                x: lastPos.x,
+                y: lastPos.y,
             }
             let to = {
-                x: currentVertex.posX - spacingFromCenter,
-                y: currentVertex.posY + spacingFromCenter
+                x: currentVertex.posX,
+                y: currentVertex.posY
             }
-            scene.context.lineWidth = 5
+            
+            if (vertexIndex === 0) {
+                let indicatorFrom = {
+                    x: to.x,
+                    y: to.y - 110
+                }
+                scene.context.strokeStyle = "#168c69";
+                scene.context.fillStyle = "#168c69";
+                drawArrowhead(scene.context, indicatorFrom, to, 15);
+            } else if (vertexIndex === path.length - 1) {
+                let indicatorFrom = {
+                    x: to.x,
+                    y: to.y - 110
+                }
+                scene.context.strokeStyle = "#DF190C";
+                scene.context.fillStyle = "#DF190C";
+                drawArrowhead(scene.context, indicatorFrom, to, 15);
+            }
 
+            addSpacingBasedOnLineDestination(from, to);
+
+            scene.context.beginPath();
+            scene.context.lineWidth = 5
+            scene.context.strokeStyle = "#168c69";
+            scene.context.fillStyle = "#168c69";
             scene.context.moveTo(from.x, from.y);
             scene.context.lineTo(to.x, to.y);
             scene.context.stroke();
             scene.context.fill();
             scene.context.closePath();
 
-            drawArrowhead(scene.context, from, to, 5)
+            drawArrowhead(scene.context, from, to, 5);
             lastPos.x = currentVertex.posX;
             lastPos.y = currentVertex.posY;
             scene.context.lineWidth = 5
-            scene.context.strokeStyle = "#168c69"
             scene.context.stroke();
-            scene.context.closePath();
-            scene.context.lineWidth = 1
+            scene.context.lineWidth = 1;
+
+            
         })
     });
+    reorderSceneObjects();
     scene.draw();
 }
 
-function drawArrowhead(context, from, to, radius) {
-	var x_center = to.x;
-	var y_center = to.y;
+function reorderSceneObjects() {
+    scene.sceneObjects = scene.sceneObjects.sort((objA, objB) => {
+        let tagA = objA.tag.split("-")[0];
+        let tagB = objB.tag.split("-")[0];
+        
+        if (tagA === "edge" && (tagB === "path" || tagB === "vertex")) return -1;
+        if (tagA === "vertex" && (tagB === "edge" || tagB === "path")) return 1;
 
-	var angle;
-	var x;
-	var y;
+
+        if (tagB === "edge" && (tagA === "path" || tagA === "vertex")) return 1;
+        if (tagB === "vertex" && (tagA === "edge" || tagA === "path")) return -1;
+
+        return 0;
+    });
+}
+
+function drawArrowhead(context, from, to, radius) {
+
+	let x_center = (from.x + to.x)/2;
+	let y_center = (from.y + to.y)/2;
+
+	let angle;
+	let x;
+	let y;
 
 	context.beginPath();
 
@@ -191,4 +321,30 @@ function drawArrowhead(context, from, to, radius) {
 	context.fill();
 }
 
+window.drawBridges = function() {
+    window.clearBridges();
+    let bridges = detectBridges(currentGraph);
+    bridges.forEach((bridge, index) => {
+        scene.addObject('bridge-'+index, () => {
+            scene.context.beginPath();
+            scene.context.lineWidth = 5
+            scene.context.strokeStyle = "#bd2b11";
+            scene.context.moveTo(bridge.vertexA.posX, bridge.vertexA.posY);
+            scene.context.lineTo(bridge.vertexB.posX, bridge.vertexB.posY);
+            scene.context.stroke();
+            scene.context.closePath();
+        })
+    });
+    scene.draw();
+}
+
+window.clearBridges = function() {
+    scene.sceneObjects = scene.sceneObjects.filter(obj => {
+        if (obj.tag.split("-")[0] === "bridge") {
+            return false;
+        }
+        return true;
+    })
+    scene.draw();
+}
 </script>

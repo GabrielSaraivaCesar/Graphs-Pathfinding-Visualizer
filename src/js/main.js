@@ -183,6 +183,7 @@ function drawEdge(edge, paralels=false) {
     scene.context.lineTo(to.x, to.y);
     scene.context.fillStyle = "#d6e8f5"
     scene.context.strokeStyle = "#008cc1"
+    scene.context.lineWidth = 1
     scene.context.stroke();
     scene.context.closePath();
     if (edge.value > 0) {
