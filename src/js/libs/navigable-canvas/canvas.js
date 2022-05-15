@@ -1,4 +1,4 @@
-
+const lowerScale = 0.5;
 
 class SceneObject {
     tag = "";
@@ -60,7 +60,6 @@ class Scene {
             this.canvas.height * ((1/this.scale)*10) + Math.abs(this.translateY)* ((1/this.scale)*10)
         );
         this.context.setTransform(this.scale, 0, 0, this.scale, this.translateX, this.translateY);
-       
         this.sceneObjects.forEach((obj) => {
             
             obj.initializer();
@@ -77,12 +76,12 @@ class Scene {
     onScroll(event) {
         let down = event.deltaY > 0;
         if (down) {
-            this.scale -= 0.1;
-            if (this.scale < 0.5) {
-                this.scale = 0.5;
+            this.scale -= 0.05;
+            if (this.scale < lowerScale) {
+                this.scale = lowerScale;
             } 
         } else {
-            this.scale += 0.1;
+            this.scale += 0.05;
         }
         this.draw();
     }
