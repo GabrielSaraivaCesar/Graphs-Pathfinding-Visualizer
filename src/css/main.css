@@ -57,6 +57,12 @@ button {
     transition: 0.3s;
 }
 
+button.secondary {
+    color: #2D2D2D;
+    background-color: #EFEFEF;
+
+}
+
 button:hover {
     box-shadow: 0px 4px 5px 1px #D6E8F5, 0px 3px 6px 5px #20222423 inset;
 }
@@ -157,3 +163,61 @@ vertical-spacing {
     width: 100%;
     display: flex;
 }
+vertical-spacing.medium {
+    height: 10px;
+}
+vertical-spacing.small {
+    height: 5px;
+}
+
+horizontal-spacing {
+    width: 20px;
+    display: flex;
+}
+horizontal-spacing.medium {
+    width: 10px;
+}
+horizontal-spacing.small {
+    width: 5px;
+}
+
+.flex {
+    display: flex;
+}
+
+.wrap {
+    flex-wrap: wrap;
+}
+
+
+.w-10 {
+    width: 10%;
+}
+.w-20 {
+    width: 20%;
+}
+.w-30 {
+    width: 30%;
+}
+.w-40 {
+    width: 40%;
+}
+.w-50 {
+    width: 50%;
+}
+.w-60 {
+    width: 60%;
+}
+.w-70 {
+    width: 70%;
+}
+.w-80 {
+    width: 80%;
+}
+.w-90 {
+    width: 90%;
+}
+.w-100 {
+    width: 100%;
+}
+
