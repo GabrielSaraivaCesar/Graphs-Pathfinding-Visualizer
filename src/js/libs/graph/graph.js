@@ -68,4 +68,15 @@ class Graph {
         });
     }
 
+    linkEdgesToVertices() {
+        this.edges.forEach(edge => {
+            if ( !edge.vertexA.edges.includes(edge) ) {
+                edge.vertexA.edges.push(edge);
+            }
+            if ( !edge.vertexB.edges.includes(edge) ) {
+                edge.vertexB.edges.push(edge);
+            }
+        });
+    }
+
 }
