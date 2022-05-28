@@ -1,10 +1,10 @@
 
-
 function generateNewScene(matrixSize=4) {
     scene.clearScene();
 
     let WCFMatrix = generateWCFMatrix(matrixSize);
     let graph = new Graph();
+    let directed = false;
 
     WCFMatrix.forEach((row, rowIndex) => {
         row.forEach((col, colIndex) => {
@@ -21,7 +21,7 @@ function generateNewScene(matrixSize=4) {
     WCFMatrix.forEach((row, rowIndex) => {
         row.forEach((col, colIndex) => {
             if (col && col.isVertex ) {
-                linkEdges(row, rowIndex, col, colIndex, graph, WCFMatrix);
+                linkEdges(row, rowIndex, col, colIndex, graph, WCFMatrix, directed);
             }
         })  
     })
@@ -46,10 +46,11 @@ function generateNewScene(matrixSize=4) {
     return graph;
 }
 
-function linkEdges(row, rowIndex, col, colIndex, graph, WCFMatrix) {
+function linkEdges(row, rowIndex, col, colIndex, graph, WCFMatrix, directed=false) {
     let edgeValue = Math.floor(Math.random() * (maxEdgeValue - minEdgeValue)) + minEdgeValue;
 
-    edgeValue = 1; // TODO remove
+    let isDirected = directed && Math.random() > 0.5;
+    let reverseDirection = directed && Math.random() > 0.5;
 
     // Find next vertex
     // RightSide
@@ -68,9 +69,15 @@ function linkEdges(row, rowIndex, col, colIndex, graph, WCFMatrix) {
             }
             else if (rItem.isVertex) {
                 if (col.right === 1 && rItem.left === 1) {
-                    graph.edges.push(
-                        new GraphEdge(rItem.vertex, col.vertex, edgeValue)
-                    )
+                    if (reverseDirection) {
+                        graph.edges.push(
+                            new GraphEdge(col.vertex, rItem.vertex, edgeValue, isDirected)
+                        )
+                    } else {
+                        graph.edges.push(
+                            new GraphEdge(rItem.vertex, col.vertex, edgeValue, isDirected)
+                        )
+                    }
                 }
                 break
             }
@@ -96,9 +103,15 @@ function linkEdges(row, rowIndex, col, colIndex, graph, WCFMatrix) {
             }
             else if (bItem.isVertex) {
                 if (col.bot === 1 && bItem.top === 1) {
-                    graph.edges.push(
-                        new GraphEdge(bItem.vertex, col.vertex, edgeValue)
-                    )
+                    if (reverseDirection) {
+                        graph.edges.push(
+                            new GraphEdge(col.vertex, bItem.vertex, edgeValue, isDirected)
+                        )
+                    } else {
+                        graph.edges.push(
+                            new GraphEdge(bItem.vertex, col.vertex, edgeValue, isDirected)
+                        )
+                    }
                 }
                 break
             }
@@ -121,9 +134,15 @@ function linkEdges(row, rowIndex, col, colIndex, graph, WCFMatrix) {
             }
             else if (diagItem.isVertex) {
                 if (col.botRight === 1 && diagItem.topLeft === 1) {
-                    graph.edges.push(
-                        new GraphEdge(diagItem.vertex, col.vertex, edgeValue)
-                    )
+                    if (reverseDirection) {
+                        graph.edges.push(
+                            new GraphEdge(col.vertex, diagItem.vertex, edgeValue, isDirected)
+                        )
+                    } else {
+                        graph.edges.push(
+                            new GraphEdge(diagItem.vertex, col.vertex, edgeValue, isDirected)
+                        )
+                    }
                 }
                 break
             }
@@ -147,9 +166,15 @@ function linkEdges(row, rowIndex, col, colIndex, graph, WCFMatrix) {
             }
             else if (diagItem.isVertex) {
                 if (col.botLeft === 1 && diagItem.topRight === 1) {
-                    graph.edges.push(
-                        new GraphEdge(diagItem.vertex, col.vertex)
-                    )
+                    if (reverseDirection) {
+                        graph.edges.push(
+                            new GraphEdge(col.vertex, diagItem.vertex, edgeValue, isDirected)
+                        )
+                    } else {
+                        graph.edges.push(
+                            new GraphEdge(diagItem.vertex, col.vertex, edgeValue, isDirected)
+                        )
+                    }
                 }
                 break
             }
@@ -174,6 +199,11 @@ function drawVertex(vertex) {
     scene.context.fillText(vertex.tag, vertex.posX-20, vertex.posY+10)
 }
 
+/**
+ * 
+ * @param {GraphEdge} edge 
+ * @param {boolean} paralels 
+ */
 function drawEdge(edge, paralels=false) {
     scene.context.beginPath();
     let from = {x: edge.vertexA.posX, y: edge.vertexA.posY}
@@ -188,7 +218,17 @@ function drawEdge(edge, paralels=false) {
     scene.context.strokeStyle = "#008cc1"
     scene.context.lineWidth = 1
     scene.context.stroke();
+    if (edge.directed) {
+        scene.context.fillStyle = "#008cc1"
+        let arrowFrom = {
+            x: (from.x + to.x)/2 ,
+            y: (from.y + to.y)/2,
+        }
+        drawArrowhead(scene.context, arrowFrom, to, 10)
+    }
     scene.context.closePath();
+
+
     if (edge.value > 0) {
         // Text box
         let w = scene.context.measureText(edge.value).width
@@ -200,6 +240,42 @@ function drawEdge(edge, paralels=false) {
         scene.context.fillText(edge.value, valueCoords.x, valueCoords.y)
     }
 }
+
+
+function drawArrowhead(context, from, to, radius) {
+
+	let x_center = (from.x + to.x)/2;
+	let y_center = (from.y + to.y)/2;
+
+	let angle;
+	let x;
+	let y;
+
+	context.beginPath();
+
+	angle = Math.atan2(to.y - from.y, to.x - from.x)
+	x = radius * Math.cos(angle) + x_center;
+	y = radius * Math.sin(angle) + y_center;
+
+	context.moveTo(x, y);
+
+	angle += (1.0/3.0) * (2 * Math.PI)
+	x = radius * Math.cos(angle) + x_center;
+	y = radius * Math.sin(angle) + y_center;
+
+	context.lineTo(x, y);
+
+	angle += (1.0/3.0) * (2 * Math.PI)
+	x = radius *Math.cos(angle) + x_center;
+	y = radius *Math.sin(angle) + y_center;
+
+	context.lineTo(x, y);
+
+	context.closePath();
+
+	context.fill();
+}
+
 
 /** @type {Graph} */
 let currentGraph = generateNewScene();

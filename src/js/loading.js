@@ -7,6 +7,8 @@ const loadingBarElement = document.querySelector('.loading-bar');
  * @param {number} total 
  */
 function changeLoadingProgress(current, total) {
+    loadingBarElement.style.display = "flex";
+    disableDuringLoading();
     setTimeout(() => {
         let proportion = current/total;
         loadingBarElement.style.width = (100*proportion)+"%";

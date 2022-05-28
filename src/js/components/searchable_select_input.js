@@ -8,7 +8,7 @@ class SearchableSelectInput extends HTMLElement {
 
     searchValue = "";
 
-    static get observedAttributes() { return ['label', 'options']; }
+    static get observedAttributes() { return ['label', 'options', 'value']; }
 
     constructor() {
         super();
@@ -129,6 +129,20 @@ class SearchableSelectInput extends HTMLElement {
         } else if (name === "options") {
             this.options = JSON.parse(newValue);
             this.loadOptions();
+            this.options.forEach(opt => {
+                if (opt.value === this.value) {
+                    this.displayValue = opt.label;
+                }
+            })
+            this.updateInputValue();
+        } else if (name === "value") {
+            this.value = newValue;
+            this.options.forEach(opt => {
+                if (opt.value === newValue) {
+                    this.displayValue = opt.label;
+                }
+            })
+            this.updateInputValue();
         }
     }
 

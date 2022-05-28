@@ -48,11 +48,7 @@ function generateDijkstraTable(graph, startVertex) {
             /** @type {GraphEdge} */
             let edge = null;
             _edges.forEach(e => {
-                if (e.directed) {
-                    if (edge == null || e.value < edge.value && e.vertexA == currentVertex && e.vertexB == neighbor) {
-                        edge = e;
-                    }
-                } else if (edge == null || e.value < edge.value) {
+                if (edge == null || e.value < edge.value) {
                     edge = e;
                 }
             })
@@ -66,9 +62,8 @@ function generateDijkstraTable(graph, startVertex) {
                 if (visitedVertices.includes(edge.vertexB)) return;
                 
                 queue.push(edge.vertexB);
-            } else {
+            } else if (!edge.directed) {
                 if (visitedVertices.includes(edge.vertexA)) return;
-
                 queue.push(edge.vertexA)
             }
         });

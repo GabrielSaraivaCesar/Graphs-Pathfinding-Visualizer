@@ -10,6 +10,7 @@ import {isBridge} from './bridges.js';
  * the sum of the paths. The less valued path will receive one more edge.
  * This rebuilds the graph with the most effective eulerian cycle
  * */
+// TODO REFACTOR
  async function graphToOptimizedEulerian(graph) {
     /** @type {GraphVertex[]} */
     let oddDegreeVertices = graph.vertices.filter(v => v.degree % 2 !== 0);
@@ -20,7 +21,6 @@ import {isBridge} from './bridges.js';
         addEdgesIntoPathes(graph, [spath.path]);
         return;
     }
-    
     /* Calculate the distance between each oddDegreeVertex to another */
     let paths = {}
     for (let i = 0; i < oddDegreeVertices.length; i++) {

@@ -1,4 +1,4 @@
-const lowerScale = 0.5;
+const lowerScale = 0.3;
 const animationFPS = 60;
 
 class SceneObject {

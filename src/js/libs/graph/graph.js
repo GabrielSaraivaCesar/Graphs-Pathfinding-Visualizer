@@ -46,7 +46,7 @@ class GraphVertex {
         this.edges.forEach(edge => {
             if (edge.vertexA == this) {
                 result.push(edge.vertexB);
-            } else {
+            } else if (!edge.directed) {
                 result.push(edge.vertexA);
             }
         });
