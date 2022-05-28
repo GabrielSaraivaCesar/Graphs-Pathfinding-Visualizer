@@ -284,6 +284,9 @@ horizontal-spacing.small {
     color: #008CC1;
     cursor: pointer;
 }
+.results-toggle {
+    --index: 1;
+}
 
 
 .results-table {
