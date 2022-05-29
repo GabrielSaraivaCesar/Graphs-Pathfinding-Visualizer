@@ -6,8 +6,8 @@
     width: 0;
     height: 6px;
     display: none;
-    background-color: #008CC1;
-    box-shadow: 0 1px 6px #008CC1;
+    background-color: var(--colors-main);
+    box-shadow: 0 1px 6px var(--colors-main);
     z-index: 3;
     transition: 0.1s;
 }
