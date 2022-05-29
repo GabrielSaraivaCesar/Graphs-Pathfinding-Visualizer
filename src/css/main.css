@@ -27,7 +27,66 @@ canvas {
     box-shadow: 0 3px 6px rgba(0,0,0,0.1);
     padding: 42px;
     overflow-y: auto;
+    transition: 0.5s;
 }
+
+.menu.collapsed {
+    right: -300px;
+}
+
+.menu-collapse-toggle:not(.collapsed) {
+    right: 350px;
+}
+.menu-collapse-toggle.collapsed {
+    transition: 0.7s;
+}
+.menu-collapse-toggle.collapsed i {
+    animation: menu-collapse-toggle-icon-rotation 0.5s;
+}
+.menu-collapse-toggle:not(.collapsed) i {
+    animation: menu-collapse-toggle-icon-rotation 0.3s reverse;
+}
+
+@keyframes menu-collapse-toggle-icon-rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.menu-collapse-toggle {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    width: 60px;
+    transition: 0.4s;
+    height: 60px;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: #008CC1;
+}
+.menu-collapse-toggle:not(.collapsed) i.show-not-collapsed {
+    display: block;
+}
+.menu-collapse-toggle:not(.collapsed) i.show-collapsed {
+    display: none;
+}
+
+.menu-collapse-toggle.collapsed i.show-not-collapsed {
+    display: none;
+}
+.menu-collapse-toggle.collapsed i.show-collapsed {
+    display: block;
+}
+
 
 .menu h3 {
     padding: 0;

@@ -4,8 +4,28 @@ import {findChinesePostmanPath} from './libs/graph/algorithms/chinese_postman.js
 import {NotReachablePathException} from './libs/graph/algorithms/shared.js';
 import {detectBridges} from './libs/graph/algorithms/bridges.js';
 
+let isMenuCollapsed = false;
 let stopsList = ["", ""];
+
 const stopInputWrapper = document.querySelector(".path-input-list");
+const menuCollapseToggle = document.querySelector('.menu-collapse-toggle');
+const menu = document.querySelector('.menu');
+
+function updateMenuCollapsedUIState() {
+    if (isMenuCollapsed) {
+        menuCollapseToggle.classList.add('collapsed');
+        menu.classList.add('collapsed');
+    } else {
+        menuCollapseToggle.classList.remove('collapsed');
+        menu.classList.remove('collapsed');
+    }
+}
+updateMenuCollapsedUIState();
+
+window.switchMenuCollapseState = function () {
+    isMenuCollapsed = !isMenuCollapsed;
+    updateMenuCollapsedUIState();
+}
 
 function updateVertexInputOptions() {
     let options = JSON.stringify(currentGraph.vertices.map(vertex => ({label: vertex.tag, value: vertex.tag})));
