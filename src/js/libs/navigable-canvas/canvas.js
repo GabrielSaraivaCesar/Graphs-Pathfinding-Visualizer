@@ -1,5 +1,6 @@
-const lowerScale = 0.3;
+const lowerScale = 0.1;
 const animationFPS = 60;
+const scrollMoveSens = 50;
 
 class SceneObject {
     tag = "";
@@ -94,6 +95,7 @@ class Scene {
             
             obj.initializer();
         })
+        this.context.setTransform(this.scale, 0, 0, this.scale, this.translateX, this.translateY);
     }
 
     reloadCanvasResolution() {
@@ -102,15 +104,29 @@ class Scene {
         this.draw();
     }
 
+    getScrollXMov(x) {
+        return (x / (window.innerWidth / 2) - 1) * scrollMoveSens;
+    }
+    getScrollYMov(y) {
+        return (y / (window.innerHeight / 2) - 1) * scrollMoveSens;
+    }
+
     /** @param {WheelEvent} event */
     onScroll(event) {
+        let xMov = event.clientX / window.innerWidth;
         let down = event.deltaY > 0;
+
         if (down) {
+            // this.translateX += window.innerWidth*(1/this.scale)/2 * 0.05;
+            // this.translateX += -((event.clientX ) / 4) * 0.05;
+            // this.translateY += (this.getScrollYMov(event.clientY)) * 0.05;
             this.scale -= 0.05;
             if (this.scale < lowerScale) {
                 this.scale = lowerScale;
             } 
         } else {
+            // this.translateX -= window.innerWidth*(1/this.scale)/2 * 0.05;
+            // this.translateY += -(this.getScrollYMov(event.clientY))  * 0.05;
             this.scale += 0.05;
         }
         this.draw();
@@ -143,6 +159,7 @@ class Scene {
                 event.touches[0].pageY - event.touches[1].pageY);
             let delta = (this.lastPinchDist || 0) - dist;
             let down = delta > 0;
+            
             if (this.lastPinchDist !== null) {
                 if (down) {
                     this.scale -= Math.abs(delta / 200);
@@ -165,6 +182,7 @@ class Scene {
                 this.isPinching = true;
                 this.isTranslating = false;
             } else {
+                this.isPinching = false;
                 this.isTranslating = true;
                 this.canvas.style.cursor = "grabbing";
             }

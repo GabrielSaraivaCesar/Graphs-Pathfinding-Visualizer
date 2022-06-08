@@ -17,7 +17,7 @@ function showAlert(status, text) {
 }
 
 function closeAlert() {
-    alertElement.style.bottom = "-100px";
+    alertElement.style.bottom = "-500px";
     clearTimeout(closeEvent);
     closeEvent = setTimeout(() => {
         alertElement.classList.remove("show");

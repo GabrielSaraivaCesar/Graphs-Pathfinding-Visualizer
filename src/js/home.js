@@ -195,8 +195,12 @@ function addSpacingBasedOnLineDestination(from, to) {
 }
 
 function drawStopMarkers(currentStopsList) {
+
+    let algorithmChoice = document.querySelector("[name='algorithm-choice']:checked").value;
+
     scene.addObject("path-stop-markers", () => {
         currentStopsList.forEach((stopName, vertexIndex) => {
+            if (algorithmChoice == "chinese-postman" && vertexIndex > 0) return;
             let vertex = currentGraph.vertices.find(v => v.tag === stopName);
 
             if (!vertex) return;
@@ -251,22 +255,7 @@ function drawPathAnimation( name, path ) {
             pos.y += diffY;
         }
 
-        scene.context.beginPath();
-        scene.context.lineWidth = 3
-        scene.context.strokeStyle = "#cfad38";
-        scene.context.fillStyle = "#f5ce42";
-        scene.context.arc(pos.x, pos.y, 5, 0, 2 * Math.PI);
-        scene.context.stroke();
-        scene.context.fill();
-        scene.context.closePath();
-
-        scene.context.beginPath();
-        scene.context.lineWidth = 5
-        scene.context.strokeStyle = "#f5ce42";
-        scene.context.moveTo(startVertex.posX, startVertex.posY);
-        scene.context.lineTo(pos.x, pos.y);
-        scene.context.stroke();
-        scene.context.closePath();
+        
 
         for (let i = 0; i < pathIndex; i++) {
             let currentV = currentGraph.vertices.find(v => v.tag == path[i]);
@@ -284,14 +273,64 @@ function drawPathAnimation( name, path ) {
             }
 
             scene.context.beginPath();
+            scene.context.lineWidth = 7
+            scene.context.strokeStyle = "#cfad38";
+            scene.context.moveTo(currentPos.x, currentPos.y);
+            scene.context.lineTo(nextPos.x, nextPos.y);
+            scene.context.stroke();
+            scene.context.closePath();
+
+            scene.context.beginPath();
             scene.context.lineWidth = 5
             scene.context.strokeStyle = "#f5ce42";
             scene.context.moveTo(currentPos.x, currentPos.y);
             scene.context.lineTo(nextPos.x, nextPos.y);
             scene.context.stroke();
             scene.context.closePath();
+
+            scene.context.beginPath();
+            scene.context.lineWidth = 1
+            scene.context.strokeStyle = "#f5ce42";
+            scene.context.fillStyle = "#f5ce42";
+            scene.context.arc(currentPos.x, currentPos.y, 3, 0, 2 * Math.PI);
+            scene.context.stroke();
+            scene.context.fill();
+            scene.context.closePath();
         }
         
+        scene.context.beginPath();
+        scene.context.lineWidth = 3
+        scene.context.strokeStyle = "#cfad38";
+        scene.context.fillStyle = "#f5ce42";
+        scene.context.arc(pos.x, pos.y, 5, 0, 2 * Math.PI);
+        scene.context.stroke();
+        scene.context.fill();
+        scene.context.closePath();
+
+        scene.context.beginPath();
+        scene.context.lineWidth = 7
+        scene.context.strokeStyle = "#cfad38";
+        scene.context.moveTo(startVertex.posX, startVertex.posY);
+        scene.context.lineTo(pos.x, pos.y);
+        scene.context.stroke();
+        scene.context.closePath();
+
+        scene.context.beginPath();
+        scene.context.lineWidth = 5
+        scene.context.strokeStyle = "#f5ce42";
+        scene.context.moveTo(startVertex.posX, startVertex.posY);
+        scene.context.lineTo(pos.x, pos.y);
+        scene.context.stroke();
+        scene.context.closePath();
+
+        scene.context.beginPath();
+        scene.context.lineWidth = 1
+        scene.context.strokeStyle = "#f5ce42";
+        scene.context.fillStyle = "#f5ce42";
+        scene.context.arc(startVertex.posX, startVertex.posY, 3, 0, 2 * Math.PI);
+        scene.context.stroke();
+        scene.context.fill();
+        scene.context.closePath();
     });
 }
 
@@ -316,19 +355,23 @@ function drawPath(name, path) {
             }
             
             
-            addSpacingBasedOnLineDestination(from, to);
+            // addSpacingBasedOnLineDestination(from, to);
 
             scene.context.beginPath();
-            scene.context.lineWidth = 5
-            scene.context.strokeStyle = "#168c69";
-            scene.context.fillStyle = "#168c69";
+            // scene.context.lineWidth = 5
+            // scene.context.strokeStyle = "#168c69";
+            // scene.context.fillStyle = "#168c69";
+            scene.context.lineWidth = 8
+            scene.context.strokeStyle = "#cfad3855";
+            scene.context.fillStyle = "#cfad3855";
+            
             scene.context.moveTo(from.x, from.y);
             scene.context.lineTo(to.x, to.y);
             scene.context.stroke();
             scene.context.fill();
             scene.context.closePath();
 
-            drawArrowhead(scene.context, from, to, 5);
+            // drawArrowhead(scene.context, from, to, 5);
             lastPos.x = currentVertex.posX;
             lastPos.y = currentVertex.posY;
             scene.context.lineWidth = 5

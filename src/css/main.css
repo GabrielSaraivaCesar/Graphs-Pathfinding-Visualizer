@@ -29,6 +29,7 @@ canvas {
     padding: 42px;
     overflow-y: auto;
     transition: 0.5s;
+    z-index: 2;
 }
 
 .menu.collapsed {
@@ -343,6 +344,7 @@ horizontal-spacing.small {
     font-size: 20px;
     color: var(--colors-main);
     cursor: pointer;
+    z-index: 1;
 }
 .results-toggle {
     --index: 1;
@@ -397,4 +399,19 @@ horizontal-spacing.small {
 }
 .modal-body, .modal-header{
     padding: 24px;
+}
+
+@media (max-width: 425px) {
+    .menu {
+        right: 10px;
+        top: calc(40px + 50px);
+        height: calc(100vh - 80px - 50px);
+    }
+    .menu-collapse-toggle {
+        right: 10px;
+        top: 20px;
+    }
+    .menu-collapse-toggle:not(.collapsed) {
+        right: 250px;
+    }
 }

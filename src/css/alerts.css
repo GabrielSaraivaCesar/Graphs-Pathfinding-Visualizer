@@ -8,6 +8,8 @@
     /* 100% - right menu size */
     width: 100%;
     padding: 0 60px;
+    z-index: 10;
+
 }
 .alert {
     /* width: 100%;     */
@@ -24,17 +26,17 @@
 .alert[data-status=warning] {
     border-color: #DE771Daa;
     color: #A1320D;
-    background-color: #FAC45Faa;
+    background-color: #FAC45F;
 }
 .alert[data-status=success] {
     border-color: #09A59Baa;
     color: #025A55;
-    background-color: #6EEDE5aa;
+    background-color: #6EEDE5;
 }
 .alert[data-status=error] {
     border-color: #DF190Caa;
     color: #821403;
-    background-color: #F9AFAAaa;
+    background-color: #F9AFAA;
 }
 .alert .alert-text {
     margin-right: 15px;
