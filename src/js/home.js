@@ -1,7 +1,7 @@
 import {generateDijkstraTable} from './libs/graph/algorithms/dijkstra.js';
 import {findsmallerPath} from './libs/graph/algorithms/smaller_path.js';
 import {findChinesePostmanPath} from './libs/graph/algorithms/chinese_postman.js';
-import {NotReachablePathException} from './libs/graph/algorithms/shared.js';
+import {NotReachablePathException, TooMuchIterations} from './libs/graph/algorithms/shared.js';
 import {detectBridges} from './libs/graph/algorithms/bridges.js';
 
 let stopsList = ["", ""];
@@ -69,13 +69,14 @@ window.executeAlgorithm = async function () {
         }
     })
     
-    if (!allInputsFilled) {
-        showAlert("warning", "Preencha todas as paradas!");
-        return
-    }
+   
     
     let path = {path: [], value: 0};
     if (algorithmChoice === "dijkstra") {
+        if (!allInputsFilled) {
+            showAlert("warning", "Preencha todas as paradas!");
+            return
+        }
         // if (!endVertex) {
         //     showAlert("warning", "Este algoritmo precisa de um vértice final!");
         //     return;
@@ -105,12 +106,16 @@ window.executeAlgorithm = async function () {
         }
     } else if (algorithmChoice === "chinese-postman") {
         try {
+            let startVertex = currentGraph.vertices.find(v => v.tag === stopsList[0]);
+            let endVertex = currentGraph.vertices.find(v => v.tag === stopsList[stopsList.length-1]);
             path = await findChinesePostmanPath(currentGraph, startVertex, endVertex);
             showAlert("success", "Caminho traçado!");
         } catch (err) {
             console.error(err);
             if (err instanceof NotReachablePathException) {
                 showAlert("error", "Este grafo é inválido pois possúi multiplos componentes");
+            } else if (err instanceof TooMuchIterations) {
+                showAlert("error", "Este grafo possui muitos vertices de grau impar. Execução cancelada por segurança");
             }
         }
     }
@@ -173,6 +178,9 @@ function drawStopMarkers(currentStopsList) {
     scene.addObject("path-stop-markers", () => {
         currentStopsList.forEach((stopName, vertexIndex) => {
             let vertex = currentGraph.vertices.find(v => v.tag === stopName);
+
+            if (!vertex) return;
+            
             let indicatorFrom = {
                 x: vertex.posX,
                 y: vertex.posY - 110
@@ -356,6 +364,32 @@ window.clearBridges = function() {
         return true;
     })
     scene.draw();
+}
+
+function enableAllInputs() {
+    let inputs = document.querySelectorAll(".path-input");
+    inputs.forEach(el => {
+        el.removeAttribute("disabled");
+    })
+}
+
+function disableNotInitialInputs() {
+    
+    let inputs = document.querySelectorAll(".path-input");
+    inputs.forEach((el, i) => {
+        if (i === 0) {
+            el.removeAttribute("disabled");
+        } else {
+            el.setAttribute("disabled", "");
+        }
+    })
+}
+
+window.onSetChinesePostman = function(e) {
+    disableNotInitialInputs();
+}
+window.onSetDijkstra = function(e) {
+    enableAllInputs();
 }
 
 

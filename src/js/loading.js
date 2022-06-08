@@ -16,8 +16,11 @@ function changeLoadingProgress(current, total) {
 }
 
 function finishLoading() {
-    loadingBarElement.style.display = "none";
-    loadingBarElement.style.width = "0px";
+    loadingBarElement.style.width = "100%";
+    window.setTimeout(() => {
+        loadingBarElement.style.display = "none";
+        loadingBarElement.style.width = "0px";
+    }, 1000)
     enableAfterLoading();
 }
 

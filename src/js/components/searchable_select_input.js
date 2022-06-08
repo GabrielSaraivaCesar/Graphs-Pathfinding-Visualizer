@@ -7,8 +7,9 @@ class SearchableSelectInput extends HTMLElement {
     options = [];
 
     searchValue = "";
+    disabled = false;
 
-    static get observedAttributes() { return ['label', 'options', 'value']; }
+    static get observedAttributes() { return ['label', 'options', 'value', 'disabled']; }
 
     constructor() {
         super();
@@ -39,7 +40,11 @@ class SearchableSelectInput extends HTMLElement {
             this.searchValue = this._removeSpecialChars(input.value.toUpperCase());
             this.loadOptions();
         }
-        input.onfocus = () => {
+        input.onfocus = (e) => {
+            if (this.disabled) {
+                input.blur();
+                return;
+            }
             this.loadOptions();
             input.setSelectionRange(0, input.value.length, "forward");
         }
@@ -143,6 +148,19 @@ class SearchableSelectInput extends HTMLElement {
                 }
             })
             this.updateInputValue();
+        } else if (name === "disabled") {
+            this.disabled = newValue !== null;
+            this._updateDisabledStyle();
+        }
+    }
+
+    _updateDisabledStyle() {
+        if (this.disabled) {
+            this.shadowRoot.querySelector(".input").style.background = "#d2d2d2";
+            this.shadowRoot.querySelector(".input input").style.cursor = "default";
+        }
+        else {
+            this.shadowRoot.querySelector(".input").style = "";
         }
     }
 

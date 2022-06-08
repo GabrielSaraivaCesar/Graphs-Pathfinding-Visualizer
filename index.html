@@ -30,8 +30,12 @@
         <h3>Algoritmo</h3>
         <div class="input-multi-options">
             <div class="opt">
-                <input checked id="dijkstra" type="radio" name="algorithm-choice" value="dijkstra">
+                <input onchange="onSetDijkstra(event)" checked id="dijkstra" type="radio" name="algorithm-choice" value="dijkstra">
                 <label for="dijkstra">Dijkstra's</label>
+            </div>
+            <div class="opt">
+                <input onchange="onSetChinesePostman(event)" id="chinese-postman" type="radio" name="algorithm-choice" value="chinese-postman">
+                <label for="chinese-postman">Chinese Postman</label>
             </div>
         </div>
         <vertical-spacing></vertical-spacing>
@@ -123,6 +127,7 @@
 <script src="./src/js/alerts.js"></script>
 <script src="./src/js/loading.js"></script>
 <script src="./src/js/shared/constants.js"></script>
+<script src="./src/js/shared/array_methods.js"></script>
 <script src="./src/js/wave_collapse_function.js"></script>
 <script src="./src/js/libs/graph/graph.js"></script>
 <script src="./src/js/libs/navigable-canvas/canvas.js"></script>

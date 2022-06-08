@@ -1,5 +1,6 @@
 import {findsmallerPath} from './smaller_path.js';
 import {isBridge} from './bridges.js';
+import { TooMuchIterations } from './shared.js';
 
 /** 
  * @param {Graph} graph
@@ -21,6 +22,16 @@ import {isBridge} from './bridges.js';
         addEdgesIntoPathes(graph, [spath.path]);
         return;
     }
+
+    let combinationAmount = 1;
+    oddDegreeVertices.forEach((v, i) => {
+        combinationAmount *= (i+1);
+    })
+    if (combinationAmount > 40320) {
+        throw new TooMuchIterations();
+    }
+    let combinationMaxLoad = Math.round(combinationAmount * 2.72);
+    
     /* Calculate the distance between each oddDegreeVertex to another */
     let paths = {}
     for (let i = 0; i < oddDegreeVertices.length; i++) {
@@ -49,34 +60,20 @@ import {isBridge} from './bridges.js';
                     resolve()
                 })
             })
-            changeLoadingProgress(i+(j/oddDegreeVertices.length), oddDegreeVertices.length);
+            changeLoadingProgress(i+(j/oddDegreeVertices.length), oddDegreeVertices.length + combinationMaxLoad);
         }
     }
 
     /* combination analysis */
-    let combinationResult = [];
-    let mutableVerticesArray = [...oddDegreeVertices];
-    for (let i = 0; i < mutableVerticesArray.length-1; i++) { // For each vertex
-        
-        let movingItem = mutableVerticesArray[0];
+    
 
-        for (let currentPos = 0; currentPos < mutableVerticesArray.length-1; currentPos += 2) { // Move the first item through all positions skippign 2 by 2
-            if ((currentPos === 0 && i > 0) || (i == mutableVerticesArray.length-2 && currentPos == i)) continue;
-            let newArr = new Array(mutableVerticesArray.length);
-            newArr[currentPos] = movingItem;
-
-            let vPos = 0;
-            mutableVerticesArray.filter(v => v!=movingItem)
-            .forEach(vertex => {
-                if (vPos === currentPos) vPos++;
-                newArr[vPos] = vertex;
-                vPos++;
-            })
-
-            mutableVerticesArray = newArr;
-            combinationResult.push(mutableVerticesArray);
+    let iterations = 0
+    let combinationResult = await oddDegreeVertices.permutations(true, () => {
+        iterations++;
+        if (iterations % Math.round(combinationMaxLoad/10) == 0) {
+            changeLoadingProgress(oddDegreeVertices.length + iterations, oddDegreeVertices.length + combinationMaxLoad);
         }
-    }
+    });
 
     /* Get the most effective couples */
     let lowerCombinationSum = null;
@@ -101,8 +98,6 @@ import {isBridge} from './bridges.js';
             lowerCombinationPathes = combinationPathes;
         }
     })
-
-    console.log(combinationResult, lowerCombinationPathes, paths)
 
     /* Adding the new edges to make it eulerian */
     addEdgesIntoPathes(graph, lowerCombinationPathes);    

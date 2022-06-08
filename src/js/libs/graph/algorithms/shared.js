@@ -3,6 +3,11 @@ class NotReachablePathException extends Error {
     name = "NotReachablePathException"
 }
 
+class TooMuchIterations extends Error {
+    message = "Too much iterations";
+    name = "TooMuchIterationsException"
+}
+
 /**
  * 
  * @param {Array} arr 
@@ -23,4 +28,4 @@ function forEachPreventingFreezing(arr, callback) {
     })
 }
 
-export {NotReachablePathException, forEachPreventingFreezing}
+export {NotReachablePathException, TooMuchIterations, forEachPreventingFreezing}

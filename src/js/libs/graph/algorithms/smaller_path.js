@@ -14,7 +14,6 @@ import { NotReachablePathException } from './shared.js';
  */
 function findsmallerPath(graph, startVertex, endVertex, soft=false) {
     let dijkstraDistanceTable = generateDijkstraTable(graph, startVertex);
-    console.log(dijkstraDistanceTable);
     if (Object.keys(dijkstraDistanceTable[endVertex.tag]).length === 0) {
         if (soft) return null;
         throw new NotReachablePathException()
