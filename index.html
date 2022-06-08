@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
+    <link rel="stylesheet" href="./src/css/shared/variables.css">
     <link rel="stylesheet" href="./src/css/main.css">
     <link rel="stylesheet" href="./src/css/matrix_size_input.css">
     <link rel="stylesheet" href="./src/css/alerts.css">
@@ -20,6 +21,10 @@
 
     </div>
 
+    <div class="menu-collapse-toggle" onclick="switchMenuCollapseState()">
+        <i class="fa-solid fa-angle-right show-not-collapsed"></i>
+        <i class="fa-solid fa-bars show-collapsed"></i>
+    </div>
     <div class="menu">
         <h3>Tamanho da Matriz</h3>
         <matrix-size-input id="matrix-size"></matrix-size-input>
@@ -82,10 +87,11 @@
     <a target="_blank" href="https://github.com/GabrielSaraivaCesar/Graphs-Pathfinding-Visualizer/issues/new" class="bug-report" title="Report a bug">
         <i class="fa-solid fa-bug"></i>
     </a>
+<!--     
     <a class="results-toggle" title="Show Results">
         <i class="fa-solid fa-square-poll-horizontal"></i>
     </a>
-    
+     -->
     <div class="modal-wrapper">
         <div class="modal">
             <div class="modal-header">
@@ -131,5 +137,5 @@
 <script src="./src/js/wave_collapse_function.js"></script>
 <script src="./src/js/libs/graph/graph.js"></script>
 <script src="./src/js/libs/navigable-canvas/canvas.js"></script>
-<script src="./src/js/main.js"></script>
+<script src="./src/js/scene.js"></script>
 <script type="module" src="./src/js/home.js"></script>

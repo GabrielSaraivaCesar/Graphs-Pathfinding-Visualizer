@@ -4,9 +4,9 @@
     display: flex;
     justify-content: center;
     bottom: 50px;
-    right: 340px;
+    right: 0;
     /* 100% - right menu size */
-    width: calc(100% - 340px);
+    width: 100%;
     padding: 0 60px;
 }
 .alert {

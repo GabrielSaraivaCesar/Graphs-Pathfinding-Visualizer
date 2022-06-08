@@ -23,6 +23,12 @@ class Scene {
     translateX = 0;
     translateY = 0;
 
+    // Mobile only
+    isPinching = false;
+    lastPinchDist = null;
+    lastMovingPosX = null;
+    lastMovingPosY = null;
+
     animationFrame = 0;
     lastAnimationFrame = null;
 
@@ -36,12 +42,19 @@ class Scene {
         this.translateX = window.innerWidth / 2;
         this.translateY = window.innerHeight / 2;
 
+        /* Desktop Support */
         this.canvas.addEventListener("wheel", (e) => this.onScroll(e));
         this.canvas.addEventListener("mousedown", (e) => this.setIsTranslating(e));
         this.canvas.addEventListener("mouseup", (e) => this.setIsTranslatingFalse(e));
         this.canvas.addEventListener("mouseleave", (e) => this.setIsTranslatingFalse(e, true));
         this.canvas.addEventListener("mousemove", (e) => this.onTranslate(e));
         this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+
+        /* Mobile Support */
+        this.canvas.addEventListener('touchstart', (e) => this.setIsTranslating(e, true));
+        this.canvas.addEventListener('touchmove', (e) => this.onTranslate(e, true));
+        this.canvas.addEventListener('touchend', (e) => this.setIsTranslatingFalse(e, true));
+
         setInterval(() => this.runAnimationFrame(), 1000/animationFPS);
 
     }
@@ -70,7 +83,6 @@ class Scene {
     }
 
     draw() {
-        let currentTransform = this.context.getTransform();
         this.context.clearRect(
             0 - Math.abs(this.translateX) * ((1/this.scale)*10), 
             0 - Math.abs(this.translateY) * ((1/this.scale)*10), 
@@ -104,20 +116,58 @@ class Scene {
         this.draw();
     }
 
-    /** @param {MouseEvent} event */
-    onTranslate(event) {
+    /** @param {MouseEvent|TouchEvent} event */
+    onTranslate(event, mobile=false) {
+        event.preventDefault();
         if (this.isTranslating) {
-            this.translateX += event.movementX ;
-            this.translateY += event.movementY ;
+            if (!mobile) {
+                this.translateX += event.movementX;
+                this.translateY += event.movementY;
+            } else {
+                let touch = event.targetTouches[0];
+
+                let xDelta = touch.clientX - (this.lastMovingPosX || touch.clientX);
+                let yDelta = touch.clientY - (this.lastMovingPosY || touch.clientY);
+                
+                this.translateX += xDelta;
+                this.translateY += yDelta;
+                
+                this.lastMovingPosX = touch.clientX;
+                this.lastMovingPosY = touch.clientY;
+            }
             this.draw();
+        } else if (this.isPinching) {
+            
+            let dist = Math.hypot(
+                event.touches[0].pageX - event.touches[1].pageX,
+                event.touches[0].pageY - event.touches[1].pageY);
+            let delta = (this.lastPinchDist || 0) - dist;
+            let down = delta > 0;
+            if (this.lastPinchDist !== null) {
+                if (down) {
+                    this.scale -= Math.abs(delta / 200);
+                    if (this.scale < lowerScale) {
+                        this.scale = lowerScale;
+                    } 
+                } else {
+                    this.scale += Math.abs(delta / 200);
+                }
+            }
+            this.lastPinchDist = dist;
         }
     }
 
-    /** @param {MouseEvent} event */
-    setIsTranslating(event) {
-        if (event.button == 0 || event.button == 2) {
-            this.isTranslating = true;
-            this.canvas.style.cursor = "grabbing";
+    /** @param {MouseEvent|TouchEvent} event */
+    setIsTranslating(event, mobile=false) {
+        event.preventDefault();
+        if (mobile || event.button == 0 || event.button == 2) {
+            if (mobile && event.touches.length === 2) {
+                this.isPinching = true;
+                this.isTranslating = false;
+            } else {
+                this.isTranslating = true;
+                this.canvas.style.cursor = "grabbing";
+            }
         }
     }
 
@@ -126,6 +176,9 @@ class Scene {
         if (event.button == 0 || event.button == 2 || force) {
             this.isTranslating = false;
             this.canvas.style.cursor = "grab";
+            this.lastMovingPosX = null;
+            this.lastMovingPosY = null;
+            this.lastPinchDist = null;
         }
     }
 
